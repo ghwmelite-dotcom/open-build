@@ -788,6 +788,9 @@ document.getElementById('fGo').addEventListener('click',forge);
 const VOTE = {
   // set a real deadline, or null to keep it always open
   deadline: null,            // e.g. "2026-06-20T20:00:00+00:00"
+  // Shared backend. Leave base:"" to use the per-browser preview (offline).
+  // Set base to the deployed Worker origin to use real shared counts.
+  api: { base: "", pollId: "current" },
   seedVotes: true,           // show some starter numbers so bars aren't all empty
   options: [
     { id:"momo",   icon:"💸", name:"MoMo Fee Calculator",
@@ -802,7 +805,8 @@ const VOTE = {
   ]
 };
 
-const VKEY='ohwp_vote_v1', VCHOICE='ohwp_vote_choice_v1';
+const VKEY='ohwp_vote_v1', VCHOICE='ohwp_vote_choice_v1', VDEV='ohwp_device_v1';
+const API = (VOTE.api && VOTE.api.base) ? VOTE.api.base.replace(/\/$/,'') : '';
 function readCounts(){
   try{const s=JSON.parse(localStorage.getItem(VKEY));if(s)return s;}catch(e){}
   const init={};VOTE.options.forEach(o=>init[o.id]=VOTE.seedVotes?o.seed:0);
@@ -812,6 +816,13 @@ function writeCounts(c){try{localStorage.setItem(VKEY,JSON.stringify(c));}catch(
 function myChoice(){try{return localStorage.getItem(VCHOICE);}catch(e){return null;}}
 function setChoice(id){try{localStorage.setItem(VCHOICE,id);}catch(e){}}
 function clearChoice(){try{localStorage.removeItem(VCHOICE);}catch(e){}}
+function deviceToken(){
+  try{
+    let t=localStorage.getItem(VDEV);
+    if(!t){t=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());localStorage.setItem(VDEV,t);}
+    return t;
+  }catch(e){return 'anon';}
+}
 
 let counts=readCounts();
 const ballot=document.getElementById('ballot');
@@ -851,20 +862,61 @@ function renderVote(){
   document.getElementById('voteTotal').textContent=total;
 }
 
-ballot.addEventListener('click',e=>{
-  const card=e.target.closest('.opt-card');if(!card)return;
-  if(isClosed())return;
-  if(myChoice())return;            // one vote per device
+// Map a server snapshot onto our local display state.
+function applyServer(s){
+  const next={};
+  VOTE.options.forEach(o=>{ next[o.id]= (s.counts && s.counts[o.id]) || 0; });
+  counts=next;
+  if(s.deadline) VOTE.deadline=s.deadline;
+  renderVote(); tickTimer();
+}
+
+// Load counts: backend if configured, else local preview. Always falls back.
+async function loadCounts(){
+  if(!API){ counts=readCounts(); renderVote(); return; }
+  try{
+    const r=await fetch(`${API}/api/poll/${VOTE.api.pollId}`);
+    if(!r.ok) throw new Error('bad status');
+    applyServer(await r.json());
+  }catch(e){ counts=readCounts(); renderVote(); }   // graceful fallback
+}
+
+ballot.addEventListener('click', async e=>{
+  const card=e.target.closest('.opt-card'); if(!card) return;
+  if(isClosed()) return;
+  if(myChoice()) return;            // one vote per device
   const id=card.dataset.id;
-  counts[id]=(counts[id]||0)+1;
-  writeCounts(counts);setChoice(id);
-  renderVote();
+  setChoice(id);                    // optimistic local lock
+
+  if(!API){                         // local preview mode
+    counts[id]=(counts[id]||0)+1; writeCounts(counts); renderVote(); return;
+  }
+  try{
+    const r=await fetch(`${API}/api/poll/${VOTE.api.pollId}/vote`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({optionId:id, voterToken:deviceToken()})
+    });
+    if(!r.ok) throw new Error('bad status');
+    applyServer(await r.json());
+  }catch(e){                        // fallback: reflect the vote locally
+    counts[id]=(counts[id]||0)+1; renderVote();
+  }
 });
-document.getElementById('voteReset').addEventListener('click',()=>{
-  const c=myChoice();if(!c)return;
-  counts[c]=Math.max(0,(counts[c]||0)-1);
-  writeCounts(counts);clearChoice();renderVote();
-});
+
+// "Clear my vote" only applies to the local preview; in backend mode the
+// server is authoritative (re-voting is idempotent), so hide the button.
+const voteResetBtn=document.getElementById('voteReset');
+if(API){ voteResetBtn.style.display='none'; }
+else{
+  voteResetBtn.addEventListener('click',()=>{
+    const c=myChoice();if(!c)return;
+    counts[c]=Math.max(0,(counts[c]||0)-1);
+    writeCounts(counts);clearChoice();renderVote();
+  });
+}
+
+// Live-ish refresh while a backend poll is open.
+if(API){ setInterval(()=>{ if(!isClosed()) loadCounts(); }, 5000); }
 
 // countdown
 function tickTimer(){
@@ -877,7 +929,7 @@ function tickTimer(){
   el.textContent=(d?d+'d ':'')+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   st.textContent='Voting closes in';
 }
-renderVote();tickTimer();setInterval(tickTimer,1000);
+loadCounts();tickTimer();setInterval(tickTimer,1000);
 
 
 const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}}),{threshold:.12});
