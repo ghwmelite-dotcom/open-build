@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OHWPStudios · Real Problems, Built Simple</title>
+<meta name="description" content="OHWPStudios builds tools that solve real problems — live, and simple enough that you could build them yourself. A growing collection of Ghana-rooted, replicable builds.">
+<meta name="theme-color" content="#0a0e0c">
+<style>
+  :root{
+    --green:#0a8f56;
+    --green-d:#006B3F;
+    --green-deep:#063d27;
+    --gold:#FCD116;
+    --gold-d:#d9b00d;
+    --red:#CE1126;
+    --red-l:#e8344a;
+    --ink:#0a0e0c;
+    --ink-2:#11181400;
+    --panel:#121a16;
+    --panel-2:#0e1511;
+    --card:#16201b;
+    --card-h:#1c2922;
+    --paper:#f4f7f3;
+    --text:#eaf2ec;
+    --muted:#9db0a6;
+    --muted-d:#6f837a;
+    --line:#243029;
+    --line-l:#2e3d34;
+    --shadow:0 18px 50px rgba(0,0,0,.45);
+    --shadow-gold:0 14px 40px rgba(252,209,22,.16);
+    --r:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--ink);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:Georgia,'Times New Roman',serif;line-height:1.12;letter-spacing:-.01em}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+
+  /* ===== Kente top ribbon ===== */
+  .ribbon{height:6px;width:100%;
+    background:repeating-linear-gradient(90deg,
+      var(--green) 0 26px, var(--gold) 26px 44px, var(--red) 44px 64px, var(--ink) 64px 70px);
+    position:fixed;top:0;left:0;right:0;z-index:70}
+
+  /* ===== Topbar ===== */
+  #topbar{position:fixed;top:6px;left:0;right:0;height:64px;
+    background:rgba(10,14,12,.72);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);z-index:60;display:flex;align-items:center}
+  #topbar .wrap{display:flex;align-items:center;gap:14px;width:100%}
+  .logo{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.02em}
+  .logo .mark{width:38px;height:38px;border-radius:11px;flex:none;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--green),var(--green-deep));
+    border:1px solid var(--line-l);box-shadow:inset 0 0 0 2px rgba(252,209,22,.18);
+    font-family:Georgia,serif;color:var(--gold);font-size:18px;font-weight:700}
+  .logo .nm{font-family:'Segoe UI',sans-serif;font-size:16px}
+  .logo .nm b{color:#fff}
+  .logo .nm span{color:var(--gold)}
+  #topbar nav{margin-left:auto;display:flex;gap:6px}
+  #topbar nav a{padding:8px 14px;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600;transition:.2s}
+  #topbar nav a:hover{color:#fff;background:var(--panel)}
+  @media(max-width:620px){#topbar nav{display:none}}
+
+  /* ===== Hero ===== */
+  .hero{position:relative;padding:148px 0 70px;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(900px 420px at 78% -10%, rgba(252,209,22,.10), transparent 60%),
+      radial-gradient(760px 500px at 10% 8%, rgba(10,143,86,.18), transparent 62%),
+      radial-gradient(600px 600px at 92% 90%, rgba(206,17,38,.10), transparent 60%)}
+  .hero .wrap{position:relative;z-index:2}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;
+    font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--gold);background:rgba(252,209,22,.08);
+    border:1px solid rgba(252,209,22,.28);padding:7px 14px;border-radius:100px;margin-bottom:24px}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+  .hero h1{font-size:clamp(38px,6.2vw,72px);max-width:15ch;margin-bottom:22px}
+  .hero h1 .u{color:var(--gold);position:relative;white-space:nowrap}
+  .hero h1 .u::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:10px;
+    background:linear-gradient(90deg,var(--green),var(--gold),var(--red));opacity:.5;border-radius:4px;z-index:-1}
+  .hero p.lead{font-size:clamp(17px,2.1vw,21px);color:var(--muted);max-width:60ch;margin-bottom:34px}
+  .hero .cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:13px;
+    font-weight:700;font-size:15px;cursor:pointer;border:1px solid transparent;transition:.22s;font-family:inherit}
+  .btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#1a1404;
+    box-shadow:var(--shadow-gold)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 20px 48px rgba(252,209,22,.28)}
+  .btn.ghost{background:transparent;border-color:var(--line-l);color:var(--text)}
+  .btn.ghost:hover{background:var(--panel);border-color:var(--gold)}
+  .hero .stats{display:flex;gap:30px;margin-top:46px;flex-wrap:wrap}
+  .hero .stats .s b{display:block;font-family:Georgia,serif;font-size:30px;color:#fff;line-height:1}
+  .hero .stats .s span{font-size:13px;color:var(--muted-d);font-weight:600;letter-spacing:.03em}
+
+  /* floating kente chips in hero */
+  .chip{position:absolute;border-radius:14px;opacity:.5;z-index:1;
+    background:repeating-linear-gradient(45deg,var(--green) 0 8px,var(--gold) 8px 14px,var(--red) 14px 22px);
+    filter:blur(.3px);animation:float 9s ease-in-out infinite}
+  .chip.c1{width:120px;height:120px;top:120px;right:6%;transform:rotate(12deg);animation-delay:0s}
+  .chip.c2{width:70px;height:70px;bottom:60px;right:24%;transform:rotate(-18deg);animation-delay:1.4s;opacity:.35}
+  .chip.c3{width:54px;height:54px;top:210px;right:30%;transform:rotate(30deg);animation-delay:2.6s;opacity:.3}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(12deg)}50%{transform:translateY(-18px) rotate(16deg)}}
+  @media(max-width:760px){.chip{display:none}}
+
+  /* ===== Section heading ===== */
+  .sec{padding:66px 0}
+  .sec-h{text-align:center;max-width:680px;margin:0 auto 50px}
+  .sec-h .tag{font-size:12.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:14px}
+  .sec-h h2{font-size:clamp(28px,4vw,42px);margin-bottom:14px}
+  .sec-h p{color:var(--muted);font-size:17px}
+
+  /* ===== Build cards grid ===== */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:24px}
+  .build{position:relative;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);overflow:hidden;transition:.26s;display:flex;flex-direction:column}
+  .build:hover{transform:translateY(-5px);border-color:var(--line-l);box-shadow:var(--shadow)}
+  .build .top{padding:22px 22px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .build .num{font-family:Georgia,serif;font-size:13px;font-weight:700;color:var(--ink);
+    background:var(--gold);padding:4px 11px;border-radius:8px;letter-spacing:.04em}
+  .build .status{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    padding:5px 11px;border-radius:100px;border:1px solid var(--line-l)}
+  .build .status.live{color:var(--green);border-color:rgba(10,143,86,.4);background:rgba(10,143,86,.08)}
+  .build .status.next{color:var(--gold);border-color:rgba(252,209,22,.35);background:rgba(252,209,22,.07)}
+  .build .status.upcoming{color:var(--green);border-color:rgba(10,143,86,.3);background:rgba(10,143,86,.06)}
+  .build .status.soon{color:var(--muted-d)}
+  .build .status.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--green);margin-right:6px;box-shadow:0 0 8px var(--green);vertical-align:middle;animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .build .icon{font-size:40px;line-height:1;padding:18px 22px 6px}
+  .build h3{font-size:23px;padding:0 22px 8px;color:#fff}
+  .build .desc{padding:0 22px;color:var(--muted);font-size:14.5px;flex:1}
+  .build .pills{display:flex;gap:7px;flex-wrap:wrap;padding:16px 22px 0}
+  .build .pill{font-size:11.5px;font-weight:600;color:var(--muted);background:var(--panel);
+    border:1px solid var(--line);padding:4px 10px;border-radius:8px}
+  .build .open{margin:18px 22px 22px;padding:12px;border-radius:11px;text-align:center;
+    font-weight:700;font-size:14px;background:var(--panel);border:1px solid var(--line-l);
+    color:var(--text);cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .build .open:hover{background:var(--green-deep);border-color:var(--green);color:#fff}
+  .build .visit{margin:18px 22px 0;padding:12px;border-radius:11px;text-align:center;
+    font-weight:700;font-size:14px;background:linear-gradient(135deg,var(--gold),var(--gold-d));
+    color:#1a1404;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+  .build .visit:hover{transform:translateY(-2px);box-shadow:var(--shadow-gold)}
+  .build:has(.visit) .open{margin-top:10px}
+  .build .accent{height:4px;width:100%;
+    background:linear-gradient(90deg,var(--green),var(--gold),var(--red))}
+
+  /* ===== Modal / guide drawer ===== */
+  .scrim{position:fixed;inset:0;background:rgba(4,7,5,.78);backdrop-filter:blur(6px);
+    z-index:100;opacity:0;pointer-events:none;transition:.3s;display:grid;place-items:center;padding:20px}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .modal{background:var(--panel);border:1px solid var(--line-l);border-radius:22px;
+    max-width:760px;width:100%;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;
+    transform:translateY(24px) scale(.98);transition:.3s;box-shadow:var(--shadow)}
+  .scrim.show .modal{transform:none}
+  .modal .mhead{padding:26px 28px;border-bottom:1px solid var(--line);position:relative;
+    background:linear-gradient(135deg,var(--green-deep),var(--panel))}
+  .modal .mhead .num{font-family:Georgia,serif;font-size:12.5px;font-weight:700;color:var(--ink);
+    background:var(--gold);padding:4px 11px;border-radius:8px;display:inline-block;margin-bottom:12px}
+  .modal .mhead h3{font-size:28px;color:#fff;margin-bottom:6px}
+  .modal .mhead p{color:var(--muted);font-size:14.5px}
+  .modal .close{position:absolute;top:20px;right:20px;width:36px;height:36px;border-radius:10px;
+    background:rgba(0,0,0,.3);border:1px solid var(--line-l);color:var(--text);font-size:18px;
+    cursor:pointer;display:grid;place-items:center;transition:.2s}
+  .modal .close:hover{background:var(--red);border-color:var(--red);color:#fff}
+  .mbody{padding:8px 28px 28px;overflow-y:auto}
+  .mbody::-webkit-scrollbar{width:9px}
+  .mbody::-webkit-scrollbar-thumb{background:var(--line-l);border-radius:10px}
+
+  .stepline{display:flex;gap:16px;padding:18px 0;border-bottom:1px dashed var(--line)}
+  .stepline:last-of-type{border-bottom:none}
+  .stepline .sn{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    font-family:Georgia,serif;font-weight:700;font-size:15px;color:var(--ink);
+    background:linear-gradient(135deg,var(--gold),var(--gold-d))}
+  .stepline .sc h4{font-size:16.5px;color:#fff;margin-bottom:5px}
+  .stepline .sc p{font-size:14px;color:var(--muted);margin-bottom:9px}
+  .prompt{background:var(--ink);border:1px solid var(--line-l);border-left:3px solid var(--green);
+    border-radius:10px;padding:12px 14px;font-size:13px;color:#cfe0d6;position:relative;font-style:italic}
+  .prompt .lbl{display:block;font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--green);margin-bottom:7px}
+  .copy{position:absolute;top:10px;right:10px;background:var(--panel);border:1px solid var(--line-l);
+    color:var(--muted);font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px;cursor:pointer;transition:.2s;font-style:normal}
+  .copy:hover{background:var(--green);color:#fff;border-color:var(--green)}
+  .cmd{background:#06120c;border:1px solid var(--line-l);border-radius:9px;padding:10px 13px;
+    font-family:'Consolas','Courier New',monospace;font-size:13px;color:var(--gold);margin:8px 0}
+  .note{background:rgba(206,17,38,.07);border:1px solid rgba(206,17,38,.28);border-radius:10px;
+    padding:13px 15px;font-size:13.5px;color:#f3c9cf;margin:16px 0}
+  .note b{color:#fff}
+  .clip{background:rgba(252,209,22,.06);border:1px solid rgba(252,209,22,.25);border-radius:10px;
+    padding:11px 14px;font-size:13px;color:#f0e2ab;margin-top:9px}
+  .clip b{color:var(--gold)}
+  .mfoot{padding:18px 28px;border-top:1px solid var(--line);display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--panel-2)}
+  .mfoot .disc{font-size:12px;color:var(--muted-d);flex:1;min-width:200px}
+
+  /* ===== Suggest / community ===== */
+  .community{background:linear-gradient(135deg,var(--green-deep),var(--ink));
+    border:1px solid var(--line-l);border-radius:24px;padding:48px 38px;text-align:center;position:relative;overflow:hidden}
+  .community::before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(45deg,transparent 0 38px,rgba(252,209,22,.03) 38px 40px)}
+  .community .inner{position:relative;z-index:2}
+  .community h2{font-size:clamp(26px,3.6vw,38px);color:#fff;margin-bottom:14px}
+  .community p{color:var(--muted);max-width:54ch;margin:0 auto 26px;font-size:16px}
+  .vote-soon{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;
+    color:var(--gold);background:rgba(252,209,22,.08);border:1px solid rgba(252,209,22,.3);
+    padding:9px 18px;border-radius:100px}
+
+  /* ===== Footer ===== */
+  footer{padding:46px 0 60px;border-top:1px solid var(--line);margin-top:60px;text-align:center}
+  footer .proverb{font-family:Georgia,serif;font-style:italic;font-size:18px;color:var(--gold);max-width:46ch;margin:0 auto 10px}
+  footer .pa{font-size:13px;color:var(--muted-d);margin-bottom:24px}
+  footer .fl{color:var(--muted);font-size:13.5px}
+  footer .fl b{color:#fff}
+
+  /* ===== Build Brief Forge ===== */
+  .forge{display:grid;grid-template-columns:0.85fr 1.15fr;gap:22px;align-items:start}
+  @media(max-width:840px){.forge{grid-template-columns:1fr}}
+  .forge-in{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:14px}
+  .fl-lab{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:700;color:var(--text)}
+  .fl-lab .opt{color:var(--muted-d);font-weight:500}
+  .fl-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:520px){.fl-row{grid-template-columns:1fr}}
+  .forge-in select,.forge-in input,.forge-in textarea{
+    background:var(--ink);border:1px solid var(--line-l);border-radius:10px;color:#fff;
+    padding:11px 13px;font-size:14px;font-family:inherit;font-weight:500;transition:.18s;width:100%;resize:vertical}
+  .forge-in select:focus,.forge-in input:focus,.forge-in textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(252,209,22,.12)}
+  .forge-in select{cursor:pointer}
+  .fl-hint{font-size:11.5px;color:var(--muted-d);text-align:center}
+  .forge-out{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);min-height:340px;overflow:hidden}
+  .forge-empty{height:100%;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:34px;color:var(--muted)}
+  .forge-empty .fe-ic{font-size:46px;margin-bottom:16px;opacity:.65}
+  .forge-empty p{max-width:34ch;font-size:14.5px}
+  .brief-h{padding:20px 22px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,var(--green-deep),var(--panel))}
+  .brief-h .bt{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+  .brief-h h3{font-size:22px;color:#fff}
+  .brief-body{padding:6px 22px 22px}
+  .blk{padding:16px 0;border-bottom:1px dashed var(--line)}
+  .blk:last-child{border-bottom:none}
+  .blk .bh{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+  .blk .bh .bi{font-size:15px}
+  .promptbox{background:var(--ink);border:1px solid var(--line-l);border-left:3px solid var(--gold);
+    border-radius:10px;padding:14px 15px;font-size:13.5px;color:#dfe9e1;position:relative;line-height:1.65}
+  .promptbox .copy2{position:absolute;top:11px;right:11px;background:var(--gold);border:none;color:#1a1404;
+    font-size:11.5px;font-weight:800;padding:5px 11px;border-radius:7px;cursor:pointer;transition:.2s}
+  .promptbox .copy2:hover{background:#fff}
+  .scope-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.scope-cols{grid-template-columns:1fr}}
+  .scope-cols .sc-box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .scope-cols .sc-box .sh{font-size:12px;font-weight:800;margin-bottom:8px}
+  .scope-cols .sc-in .sh{color:var(--green)}
+  .scope-cols .sc-out .sh{color:var(--red-l)}
+  .scope-cols ul{list-style:none;font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+  .scope-cols li{padding-left:18px;position:relative}
+  .sc-in li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}
+  .sc-out li::before{content:"✕";position:absolute;left:0;color:var(--red-l);font-weight:800}
+  .checks{display:flex;flex-direction:column;gap:8px}
+  .chk{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--text)}
+  .chk .cb{width:22px;height:22px;border-radius:7px;flex:none;display:grid;place-items:center;font-size:12px;font-weight:800}
+  .chk.pass .cb{background:rgba(10,143,86,.16);color:var(--green);border:1px solid rgba(10,143,86,.4)}
+  .chk.warn .cb{background:rgba(252,209,22,.12);color:var(--gold);border:1px solid rgba(252,209,22,.4)}
+  .verdict{margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13.5px;font-weight:700;text-align:center}
+  .verdict.go{background:rgba(10,143,86,.12);color:var(--green);border:1px solid rgba(10,143,86,.4)}
+  .verdict.care{background:rgba(252,209,22,.1);color:var(--gold);border:1px solid rgba(252,209,22,.38)}
+  .clips-list{display:flex;flex-direction:column;gap:9px}
+  .cliprow{display:flex;gap:10px;font-size:13px;color:var(--muted);background:rgba(252,209,22,.05);
+    border:1px solid rgba(252,209,22,.18);border-radius:9px;padding:9px 12px}
+  .cliprow .cn{flex:none;color:var(--gold);font-weight:800}
+  .brief-cta{padding:16px 22px;border-top:1px solid var(--line);background:var(--panel-2);display:flex;gap:10px;flex-wrap:wrap}
+  .brief-cta .btn{flex:1;justify-content:center;min-width:140px;font-size:13.5px;padding:11px 16px}
+
+  /* ===== Live Vote ===== */
+  .vote-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;max-width:760px;margin:0 auto}
+  .vote-status{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:20px}
+  .vote-status .vdot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 1.6s infinite}
+  .vote-status.closed .vdot{background:var(--red);box-shadow:0 0 10px var(--red);animation:none}
+  .vote-status .vtimer{margin-left:auto;font-family:'Consolas',monospace;font-size:13px;color:var(--gold);
+    background:var(--ink);border:1px solid var(--line-l);padding:5px 11px;border-radius:8px}
+  .ballot{display:flex;flex-direction:column;gap:13px}
+  .opt-card{position:relative;border:1px solid var(--line-l);border-radius:13px;padding:16px 18px;cursor:pointer;
+    overflow:hidden;transition:.2s;background:var(--panel-2)}
+  .opt-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+  .opt-card.voted{border-color:var(--green);box-shadow:0 0 0 2px rgba(10,143,86,.25)}
+  .opt-card.leading::after{content:"Leading";position:absolute;top:12px;right:14px;font-size:10.5px;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:var(--gold);padding:3px 9px;border-radius:7px;z-index:3}
+  .opt-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,rgba(10,143,86,.22),rgba(252,209,22,.12));
+    transition:width .6s cubic-bezier(.2,.7,.3,1);z-index:0}
+  .opt-inner{position:relative;z-index:2}
+  .opt-top{display:flex;align-items:center;gap:11px;margin-bottom:5px}
+  .opt-ic{font-size:24px;line-height:1}
+  .opt-name{font-family:Georgia,serif;font-size:18px;color:#fff;flex:1}
+  .opt-pct{font-family:Georgia,serif;font-size:18px;font-weight:700;color:var(--gold);opacity:0;transition:.3s}
+  .vote-wrap.hasvoted .opt-pct{opacity:1}
+  .opt-desc{font-size:13.5px;color:var(--muted);margin-bottom:4px}
+  .opt-meta{font-size:11.5px;color:var(--muted-d)}
+  .opt-meta b{color:var(--green)}
+  .opt-action{display:inline-flex;align-items:center;gap:7px;margin-top:11px;font-size:12.5px;font-weight:800;
+    letter-spacing:.04em;color:var(--gold);text-transform:uppercase}
+  .vote-wrap.hasvoted .opt-action,.vote-wrap.closed .opt-action{display:none}
+  .vote-foot{display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+  .vtotal{font-size:14px;color:var(--muted)}.vtotal b{color:#fff;font-family:Georgia,serif;font-size:18px}
+  .vreset{background:transparent;border:1px solid var(--line-l);color:var(--muted-d);font-size:12px;font-weight:600;
+    padding:7px 13px;border-radius:8px;cursor:pointer;transition:.2s;font-family:inherit}
+  .vreset:hover{border-color:var(--red);color:var(--red-l)}
+  .vote-note{font-size:11.5px;color:var(--muted-d);margin-top:14px;line-height:1.5;text-align:center}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:.6s cubic-bezier(.2,.7,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div class="ribbon"></div>
+
+<header id="topbar">
+  <div class="wrap">
+    <a href="#top" class="logo">
+      <span class="mark">O</span>
+      <span class="nm"><b>OHWP</b><span>Studios</span></span>
+    </a>
+    <nav>
+      <a href="#builds">Builds</a>
+      <a href="#how">How it works</a>
+      <a href="#forge">Forge a brief</a>
+      <a href="#vote">Vote</a>
+      <a href="#community">Suggest</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+<section class="hero">
+  <span class="chip c1"></span><span class="chip c2"></span><span class="chip c3"></span>
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span> Launching soon · Build along live</span>
+    <h1>We turn real problems into tools <span class="u">anyone can build</span>.</h1>
+    <p class="lead">OHWPStudios builds small, useful things that solve everyday Ghanaian problems — live, on stream, and simple enough that you could build them yourself. Here's what's coming first — follow along when we go live.</p>
+    <div class="cta">
+      <a href="#builds" class="btn primary">See what's coming →</a>
+      <a href="#community" class="btn ghost">Suggest a problem</a>
+    </div>
+    <div class="stats">
+      <div class="s"><b id="stCount">5</b><span>BUILDS PLANNED</span></div>
+      <div class="s"><b>100%</b><span>FOLLOW-ALONG</span></div>
+      <div class="s"><b>🇬🇭</b><span>GHANA-ROOTED</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="builds">
+  <div class="wrap">
+    <div class="sec-h reveal">
+      <div class="tag">The Collection</div>
+      <h2>Every build, start to finish</h2>
+      <p>Each card opens a simplified, step-by-step guide. No coding experience needed — Claude Code writes it, you follow along.</p>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<section class="sec" id="how">
+  <div class="wrap">
+    <div class="sec-h reveal">
+      <div class="tag">The Method</div>
+      <h2>How an OHWPStudios build works</h2>
+      <p>The same simple pipeline every time, so anyone can follow — or replicate it for their own city.</p>
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))" id="howGrid"></div>
+  </div>
+</section>
+
+<section class="sec" id="forge">
+  <div class="wrap">
+    <div class="sec-h reveal">
+      <div class="tag">The Build Brief Forge</div>
+      <h2>From idea to build plan, instantly</h2>
+      <p>Got a problem worth solving? Shape it into an OHWPStudios build brief — the exact prompt to feed Claude Code, the scope, a buildability check, and the moments to film. Copy it, follow along, or build it yourself.</p>
+    </div>
+
+    <div class="forge reveal">
+      <div class="forge-in">
+        <label class="fl-lab">What kind of tool is it?
+          <select id="fType"></select>
+        </label>
+        <label class="fl-lab">Give it a name
+          <input id="fName" type="text" placeholder="e.g. Which Trotro?" maxlength="40">
+        </label>
+        <label class="fl-lab">What problem does it solve? <span class="opt">(one sentence)</span>
+          <textarea id="fProblem" rows="2" placeholder="People never know which trotro to take from A to B."></textarea>
+        </label>
+        <label class="fl-lab">Who is it for?
+          <input id="fWho" type="text" placeholder="e.g. newcomers and students in Accra" maxlength="60">
+        </label>
+        <div class="fl-row">
+          <label class="fl-lab">Does it need the internet?
+            <select id="fNet">
+              <option value="offline">No — works fully offline</option>
+              <option value="online">Yes — uses live data / an API</option>
+            </select>
+          </label>
+          <label class="fl-lab">Key data or detail <span class="opt">(optional)</span>
+            <input id="fData" type="text" placeholder="e.g. main stations and fares" maxlength="70">
+          </label>
+        </div>
+        <button class="btn primary" id="fGo" style="width:100%;justify-content:center;margin-top:6px">⚡ Forge the build brief →</button>
+        <p class="fl-hint">Everything runs in your browser — nothing is sent anywhere.</p>
+      </div>
+
+      <div class="forge-out" id="fOut">
+        <div class="forge-empty">
+          <div class="fe-ic">📝</div>
+          <p>Fill in the idea on the left and hit <b>Forge</b>. Your build brief appears here — ready to copy into Claude Code.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="vote">
+  <div class="wrap">
+    <div class="sec-h reveal">
+      <div class="tag">This Week's Vote</div>
+      <h2>You decide what gets built next</h2>
+      <p>Three problems made the shortlist — each one already scoped and ready to build. Cast your vote. The winner gets built live, and the person who suggested it gets the credit.</p>
+    </div>
+
+    <div class="vote-wrap reveal" id="voteWrap">
+      <div class="vote-status" id="voteStatus">
+        <span class="vdot"></span>
+        <span id="voteState">Voting is open</span>
+        <span class="vtimer" id="voteTimer"></span>
+      </div>
+      <div class="ballot" id="ballot"></div>
+      <div class="vote-foot">
+        <div class="vtotal"><b id="voteTotal">0</b> votes cast</div>
+        <button class="vreset" id="voteReset" title="Clear your vote on this device">Clear my vote</button>
+      </div>
+      <p class="vote-note">One vote per device. Results shown here are a live preview — wire the marked spot in the code to a backend (or run the poll on your stream platform) for a shared, tamper-proof count.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="community" style="padding-top:14px">
+  <div class="wrap reveal">
+    <div class="community">
+      <div class="inner">
+        <h2>You name the problem. We build it.</h2>
+        <p>OHWPStudios is built with the community. Suggest a real problem worth solving — the best ones make next week's vote.</p>
+        <a href="#" class="btn primary" style="margin-bottom:18px" onclick="alert('Hook this button to your suggestion form or socials.');return false;">Suggest a problem →</a>
+        <div><span class="vote-soon">🗳️ Vote above · new shortlist each cycle</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="proverb">"Knowledge is like a garden: if it is not cultivated, it cannot be harvested."</p>
+    <p class="pa">— Akan proverb</p>
+    <p class="fl"><b>OHWPStudios</b> · Real problems, built simple · Made in Ghana 🇬🇭</p>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim">
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+<script>
+/* ============ BUILD DATA — edit/add builds here ============
+   TO MARK A BUILD AS LIVE AFTER YOU STREAM IT:
+     1. change its  status:  to  "live"
+     2. change its  statusLabel:  to  "Live"
+     3. paste the deployed link into  url:  e.g.  url:"https://accra-flood-map.pages.dev"
+   The card will then show a gold "Visit the live tool" button and a pulsing Live dot,
+   and the top counter will switch to "BUILDS SHIPPED" automatically.
+   STATUS OPTIONS:  "live" | "next" | "upcoming" | "soon"
+============================================================ */
+const BUILDS = [
+  {
+    num:"BUILD #001", status:"next", statusLabel:"Up first", url:"",
+    icon:"🌊", title:"Accra Flood-Risk Map",
+    desc:"An interactive map showing which parts of Greater Accra flood — calculated purely from the shape of the land.",
+    pills:["Maps","Civic","~2 hrs"],
+    disclaimer:"Educational prototype — not an official flood warning. Follow GMet & NADMO for real alerts.",
+    steps:[
+      {h:"Get Accra's elevation data", p:"Download a Digital Elevation Model (DEM) — a height map of the land.",
+       prompt:"I'm building a flood-risk map for Greater Accra. Download a DEM GeoTIFF for latitude 5.4–5.9, longitude -0.4–0.2 using the free OpenTopography Copernicus GLO-30 dataset. Set up a Python environment, install rasterio, save it as accra_dem.tif, and walk me through each step.",
+       clip:"CLIP: the first elevation render — Accra's shape appears."},
+      {h:"Turn elevation into flood risk", p:"Find the low, flat spots where water naturally collects.",
+       prompt:"From accra_dem.tif, use a hydrology library to fill pits, compute flow direction, flow accumulation, and slope, then combine low elevation + low slope + high accumulation into a 0–100 flood-risk score saved as flood_risk.tif. Make a red=high, blue=low preview image.",
+       clip:"CLIP: watercourses emerging from raw elevation — biggest moment."},
+      {h:"Check it against real floods", p:"Do the known flood hotspots land in your red zones?",
+       prompt:"Add markers for real Accra flood hotspots — Circle/Odaw, Kaneshie, Alajo, Adabraka, Weija, Adentan, Oyarifa, Tema — and show whether they fall in my high-risk zones. Make a preview with the pins.",
+       clip:"HEADLINE CLIP: real flood spots matching the red zones."},
+      {h:"Build & deploy the web map", p:"Turn it into a shareable website on Cloudflare Pages.",
+       prompt:"Convert the risk data to GeoJSON risk bands and build a dark MapLibre map of Accra with the layer, toggleable hotspot pins, a legend, and a prototype disclaimer. Put it in a 'website' folder and help me deploy to Cloudflare Pages.",
+       clip:"CLIP: the live URL — 'check your area right now.'"}
+    ]
+  },
+  {
+    num:"BUILD #002", status:"upcoming", statusLabel:"Upcoming", url:"",
+    icon:"🚐", title:"Which Trotro?",
+    desc:"Pick where you are and where you're going — get the trotro route and approximate fare. Works fully offline.",
+    pills:["Everyday","Offline","~75 min"],
+    disclaimer:"Routes & fares are approximate and community-maintained — always confirm with the mate or driver.",
+    steps:[
+      {h:"Build the route data", p:"Write down the main stations and routes with fares.",
+       prompt:"Create a routes.js file with major Accra trotro stations (Circle, Kaneshie, Tema Station, Madina, Achimota, Lapaz, Dansoman, Adenta, Kasoa, 37, Tudu, Accra Central) and routes between them — each with start, destination, approximate fare in cedis, and a note (direct or change at a hub). Use editable placeholder fares I can correct.",
+       clip:"CLIP: you correcting the AI's fares with local knowledge — very shareable."},
+      {h:"Build the app", p:"Two dropdowns and a 'Find my trotro' button.",
+       prompt:"Build a single index.html (HTML+CSS+JS in one file) using routes.js: two dropdowns 'Where are you now?' and 'Where do you want to go?' filled from the stations, and a 'Find my trotro' button that shows the route, any change-over, and the fare. If no route exists, show a friendly message. Must work fully offline.",
+       clip:"CLIP: first working answer — Madina to Circle, route + fare."},
+      {h:"Make it look good", p:"Style it as a polished, mobile-first OHWPStudios build.",
+       prompt:"Style index.html clean and mobile-first with an OHWPStudios header, Ghana accent colours, big tappable dropdowns and button, a result card, and a bottom disclaimer that routes/fares are approximate and community-maintained.",
+       clip:"CLIP: plain page → polished branded app."},
+      {h:"Test & deploy", p:"Click through it, then publish on Cloudflare Pages.",
+       prompt:"Help me test: dropdowns fill, a known route works, an unknown route shows the friendly message, and it looks good phone-sized. Then help me deploy the folder to Cloudflare Pages.",
+       clip:"CLIP: the live URL — share it, tease Build #003."}
+    ]
+  },
+  {
+    num:"BUILD #003", status:"soon", statusLabel:"Planned", url:"",
+    icon:"💸", title:"MoMo Fee Calculator",
+    desc:"Type what you're sending — see the fee and exactly what lands. Tiny to build, hugely relatable.",
+    pills:["Money","Quick win","Coming"],
+    disclaimer:"Fee structures differ by network and change — check official rates too.",
+    steps:[
+      {h:"Coming soon", p:"This build's full guide will appear here once it's scoped and streamed.",
+       prompt:"(Guide coming soon — suggest improvements via the community section.)", clip:""}
+    ]
+  },
+  {
+    num:"BUILD #004", status:"soon", statusLabel:"Planned", url:"",
+    icon:"📚", title:"Quiz Trainer (NSMQ/BECE)",
+    desc:"A clean quiz app that drills past questions, tracks your score, and explains the answers.",
+    pills:["Education","Interactive","Coming"],
+    disclaimer:"A study aid — always cross-check with official syllabi and past papers.",
+    steps:[
+      {h:"Coming soon", p:"This build's full guide will appear here once it's scoped and streamed.",
+       prompt:"(Guide coming soon.)", clip:""}
+    ]
+  },
+  {
+    num:"BUILD #005", status:"soon", statusLabel:"Planned", url:"",
+    icon:"⛏️", title:"Galamsey Watch",
+    desc:"Mapping galamsey's impact from public data — an awareness & monitoring tool, never accusation.",
+    pills:["Civic","Maps","Coming"],
+    disclaimer:"Awareness tool built from public information only — not enforcement or accusation of individuals.",
+    steps:[
+      {h:"Coming soon", p:"This build's full guide will appear here once it's scoped and streamed.",
+       prompt:"(Guide coming soon.)", clip:""}
+    ]
+  }
+];
+
+const HOW = [
+  {icon:"🎯", t:"Pick a real problem", d:"Something Ghanaians actually face — suggested by you, or chosen to prove the format."},
+  {icon:"✂️", t:"Scope it small", d:"One thing, buildable in a single session. We protect the scope, always."},
+  {icon:"🤖", t:"Build it live", d:"Claude Code writes the code; we narrate the thinking, step by step."},
+  {icon:"📖", t:"Write the guide", d:"Every build ships a novice guide — so you can follow or replicate it."},
+  {icon:"🚀", t:"Ship & share", d:"Deploy to a live link anyone can open. Then on to the next problem."}
+];
+
+/* ============ RENDER ============ */
+const grid = document.getElementById('grid');
+BUILDS.forEach((b,i)=>{
+  const el = document.createElement('div');
+  el.className='build reveal';
+  el.style.transitionDelay=(i*60)+'ms';
+  el.innerHTML=`
+    <div class="accent"></div>
+    <div class="top">
+      <span class="num">${b.num}</span>
+      <span class="status ${b.status}">${b.statusLabel}</span>
+    </div>
+    <div class="icon">${b.icon}</div>
+    <h3>${b.title}</h3>
+    <div class="desc">${b.desc}</div>
+    <div class="pills">${b.pills.map(p=>`<span class="pill">${p}</span>`).join('')}</div>
+    ${b.status==='live'&&b.url?`<a class="visit" href="${b.url}" target="_blank" rel="noopener">🔗 Visit the live tool →</a>`:''}
+    <button class="open" data-i="${i}">Open the build guide →</button>`;
+  grid.appendChild(el);
+});
+
+const howGrid = document.getElementById('howGrid');
+HOW.forEach((h,i)=>{
+  const el=document.createElement('div');
+  el.className='build reveal';el.style.transitionDelay=(i*55)+'ms';
+  el.style.padding='26px 22px';
+  el.innerHTML=`<div style="font-size:34px;margin-bottom:12px">${h.icon}</div>
+    <h3 style="padding:0;font-size:20px;margin-bottom:7px">${h.t}</h3>
+    <div class="desc" style="padding:0">${h.d}</div>`;
+  howGrid.appendChild(el);
+});
+
+/* ============ MODAL ============ */
+const scrim=document.getElementById('scrim'), modal=document.getElementById('modal');
+function openBuild(i){
+  const b=BUILDS[i];
+  modal.innerHTML=`
+    <div class="mhead">
+      <button class="close" onclick="closeBuild()">✕</button>
+      <span class="num">${b.num}</span>
+      <h3>${b.icon} ${b.title}</h3>
+      <p>${b.desc}</p>
+    </div>
+    <div class="mbody">
+      ${b.steps.map((s,n)=>`
+        <div class="stepline">
+          <div class="sn">${b.steps.length>1?String.fromCharCode(65+n):'•'}</div>
+          <div class="sc">
+            <h4>${s.h}</h4>
+            <p>${s.p}</p>
+            ${s.prompt && s.prompt[0]!=='(' ? `<div class="prompt">
+              <span class="lbl">Type this to Claude Code</span>
+              <button class="copy" onclick="copyP(this)">Copy</button>
+              ${s.prompt}</div>`:`<div class="note" style="background:var(--panel);border-color:var(--line-l);color:var(--muted)">${s.prompt}</div>`}
+            ${s.clip?`<div class="clip"><b>📹 ${s.clip.split(':')[0]}:</b>${s.clip.split(':').slice(1).join(':')}</div>`:''}
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="mfoot">
+      <span class="disc">⚠️ ${b.disclaimer}</span>
+      ${b.status==='live'&&b.url?`<a class="btn primary" style="padding:10px 18px;font-size:14px" href="${b.url}" target="_blank" rel="noopener">🔗 Visit the live tool</a>`:''}
+    </div>`;
+  scrim.classList.add('show');document.body.style.overflow='hidden';
+}
+function closeBuild(){scrim.classList.remove('show');document.body.style.overflow=''}
+function copyP(btn){
+  const t=btn.parentElement.childNodes;
+  let txt=btn.parentElement.textContent.replace('Type this to Claude Code','').replace('Copy','').trim();
+  navigator.clipboard.writeText(txt).then(()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy',1500)});
+}
+grid.addEventListener('click',e=>{const b=e.target.closest('.open');if(b)openBuild(+b.dataset.i)});
+scrim.addEventListener('click',e=>{if(e.target===scrim)closeBuild()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeBuild()});
+const liveCount=BUILDS.filter(b=>b.status==='live').length;
+const stEl=document.getElementById('stCount');
+const stLabel=stEl.nextElementSibling;
+if(liveCount>0){stEl.textContent=liveCount;stLabel.textContent='BUILDS SHIPPED';}
+else{stEl.textContent=BUILDS.length;stLabel.textContent='BUILDS PLANNED';}
+
+/* ============ BUILD BRIEF FORGE ============
+   Template-based, fully offline. To add a new build TYPE,
+   copy one entry in FORGE_TYPES and edit it. The {{NAME}}, {{PROBLEM}},
+   {{WHO}}, {{DATA}}, {{NET}} placeholders are filled from the form.
+============================================================ */
+const FORGE_TYPES = {
+  map:{
+    label:"🗺️  A map / location tool",
+    prompt:`I'm building a web tool called "{{NAME}}". {{NET}} The problem it solves: {{PROBLEM}} It's for {{WHO}}. Use MapLibre GL JS (no API token needed) for a clean, mobile-first map. Key data: {{DATA}}. Build it as a single index.html with HTML, CSS and JS together. Add an OHWPStudios header, Ghana accent colours, a legend, and a short disclaimer that this is an educational prototype. Walk me through each step before running it, and keep the scope to just this one feature.`,
+    inc:["A clean interactive map","The one core data layer","Mobile-first layout + legend","A prototype disclaimer"],
+    out:["User accounts or logins","Live editing of the data","Multiple cities at once","Real-time alerts"],
+    clips:["The map first rendering","The data layer lighting up","Checking it against reality","The live URL reveal"]
+  },
+  calc:{
+    label:"🧮  A calculator / converter",
+    prompt:`I'm building a web tool called "{{NAME}}". {{NET}} The problem: {{PROBLEM}} It's for {{WHO}}. It should take a simple input and instantly show a clear result. Key detail: {{DATA}}. Build it as a single index.html (HTML+CSS+JS together), mobile-first, with big tappable inputs, an OHWPStudios header, Ghana accent colours, and a result card. Add a disclaimer that figures are approximate and may change. Explain each step simply and keep scope to this one calculation.`,
+    inc:["One clear input → one clear result","Big mobile-friendly controls","A clean result card","An 'approximate / verify' disclaimer"],
+    out:["Saving history or accounts","Multiple unrelated calculators","Charts and analytics","Live external rates (unless essential)"],
+    clips:["First correct result appearing","The plain→styled glow-up","Trying a real-world example","The live URL reveal"]
+  },
+  lookup:{
+    label:"🔎  A lookup / directory tool",
+    prompt:`I'm building a web tool called "{{NAME}}". {{NET}} The problem: {{PROBLEM}} It's for {{WHO}}. The user picks or searches options and gets a clear answer. Key data: {{DATA}}. Put the data in an editable data file so it's easy to extend, and build a single index.html (HTML+CSS+JS) that reads it. Mobile-first, OHWPStudios header, Ghana accent colours, friendly 'not found yet' message, and a community-maintained disclaimer. Explain each step and keep scope tight.`,
+    inc:["Search or dropdown selection","An editable data file","A friendly 'not added yet' state","Community-maintained disclaimer"],
+    out:["Auto-updating live data","User submissions on-site (for now)","Maps (unless core)","Accounts"],
+    clips:["First successful lookup","Correcting/expanding the data live","The 'not found' friendly moment","The live URL reveal"]
+  },
+  quiz:{
+    label:"📚  A quiz / learning tool",
+    prompt:`I'm building a web tool called "{{NAME}}". {{NET}} The problem: {{PROBLEM}} It's for {{WHO}}. It serves questions one at a time, tracks a score, and shows the correct answer with a short explanation at the end. Key detail: {{DATA}}. Put questions in an editable data file; build a single index.html (HTML+CSS+JS), mobile-first, OHWPStudios header, Ghana accent colours, and a clear score screen. Explain each step and keep scope to one subject/set first.`,
+    inc:["One-at-a-time questions","Score tracking + result screen","Editable question file","Answer explanations"],
+    out:["User accounts / leaderboards (later)","Huge question banks at first","Timed multiplayer","AI generation (add later)"],
+    clips:["Answering the first question","The score screen reveal","Adding a question live","The live URL reveal"]
+  },
+  form:{
+    label:"📋  A form / submission tool",
+    prompt:`I'm building a web tool called "{{NAME}}". {{NET}} The problem: {{PROBLEM}} It's for {{WHO}}. People fill a simple form and it produces a clear, useful output (a summary, a downloadable note, or a formatted message). Key detail: {{DATA}}. Build a single index.html (HTML+CSS+JS) — note: in this environment use button onClick handlers, not a raw <form> submit. Mobile-first, OHWPStudios header, Ghana accent colours. Explain each step and keep scope minimal.`,
+    inc:["A few well-chosen fields","A clear generated output","Mobile-first, tappable","Copy/download the result"],
+    out:["Storing submissions server-side (later)","Email sending (later)","Login walls","Many-step wizards"],
+    clips:["Filling it and getting output","The formatted result appearing","The styling glow-up","The live URL reveal"]
+  },
+  other:{
+    label:"✨  Something else",
+    prompt:`I'm building a web tool called "{{NAME}}". {{NET}} The problem it solves: {{PROBLEM}} It's for {{WHO}}. Key detail: {{DATA}}. Before writing code, help me pick the simplest possible version that fits in one build session. Then build it as a single index.html (HTML+CSS+JS together), mobile-first, with an OHWPStudios header, Ghana accent colours, and an appropriate disclaimer. Walk me through each step and protect the scope from creep.`,
+    inc:["The single simplest version","Mobile-first single file","OHWPStudios branding","A fitting disclaimer"],
+    out:["Anything beyond the core idea","Accounts / backends at first","Multiple features at once","Premature polish"],
+    clips:["The first working moment","The reveal you build toward","The styling glow-up","The live URL reveal"]
+  }
+};
+
+// populate type dropdown
+const fType=document.getElementById('fType');
+Object.entries(FORGE_TYPES).forEach(([k,v])=>{
+  const o=document.createElement('option');o.value=k;o.textContent=v.label;fType.appendChild(o);
+});
+
+function esc(s){return (s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+
+function forge(){
+  const t=FORGE_TYPES[fType.value];
+  const name=document.getElementById('fName').value.trim()||"My Tool";
+  const problem=document.getElementById('fProblem').value.trim()||"(describe the problem it solves)";
+  const who=document.getElementById('fWho').value.trim()||"the people who need it";
+  const data=document.getElementById('fData').value.trim()||"the key information it relies on";
+  const net=document.getElementById('fNet').value==='offline'?"It should work fully offline.":"It uses live data or an online API.";
+
+  const prompt=t.prompt
+    .replaceAll('{{NAME}}',name).replaceAll('{{PROBLEM}}',problem)
+    .replaceAll('{{WHO}}',who).replaceAll('{{DATA}}',data).replaceAll('{{NET}}',net);
+
+  // buildability check
+  const online=document.getElementById('fNet').value==='online';
+  const checks=[
+    {pass:true,label:"Buildable in one stream session"},
+    {pass:true,label:"A novice could follow & replicate it"},
+    {pass:!online,label:online?"Needs internet/API — test it before going live":"Works offline — reliable on stream"},
+    {pass:true,label:"Solves a real problem, not a gimmick"}
+  ];
+  const allPass=checks.every(c=>c.pass);
+
+  document.getElementById('fOut').innerHTML=`
+    <div class="brief-h">
+      <div class="bt">OHWPStudios Build Brief</div>
+      <h3>${esc(name)}</h3>
+    </div>
+    <div class="brief-body">
+      <div class="blk">
+        <div class="bh"><span class="bi">🤖</span> The Claude Code prompt</div>
+        <div class="promptbox" id="pbox">
+          <button class="copy2" onclick="copyBrief()">Copy</button>
+          ${esc(prompt)}
+        </div>
+      </div>
+      <div class="blk">
+        <div class="bh"><span class="bi">✂️</span> Scope — keep it tight</div>
+        <div class="scope-cols">
+          <div class="sc-box sc-in"><div class="sh">Build this</div><ul>${t.inc.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+          <div class="sc-box sc-out"><div class="sh">Not yet</div><ul>${t.out.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        </div>
+      </div>
+      <div class="blk">
+        <div class="bh"><span class="bi">✅</span> Buildability check</div>
+        <div class="checks">
+          ${checks.map(c=>`<div class="chk ${c.pass?'pass':'warn'}"><span class="cb">${c.pass?'✓':'!'}</span>${c.label}</div>`).join('')}
+        </div>
+        <div class="verdict ${allPass?'go':'care'}">${allPass?'🟢 Green light — this is a clean OHWPStudios build.':'🟡 Buildable, with one thing to handle carefully (see above).'}</div>
+      </div>
+      <div class="blk">
+        <div class="bh"><span class="bi">📹</span> Moments to film</div>
+        <div class="clips-list">
+          ${t.clips.map((c,i)=>`<div class="cliprow"><span class="cn">${i+1}</span>${c}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="brief-cta">
+      <button class="btn primary" onclick="copyBrief()">📋 Copy the prompt</button>
+      <a class="btn ghost" href="#community">💡 Suggest this build →</a>
+    </div>`;
+  window._lastPrompt=prompt;
+  document.getElementById('fOut').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function copyBrief(){
+  navigator.clipboard.writeText(window._lastPrompt||'').then(()=>{
+    document.querySelectorAll('.copy2,.brief-cta .primary').forEach(b=>{
+      const o=b.textContent;b.textContent='Copied ✓';setTimeout(()=>b.textContent=o,1500);
+    });
+  });
+}
+document.getElementById('fGo').addEventListener('click',forge);
+
+
+/* ============ LIVE VOTE ============
+   EDIT THIS each cycle: the three pre-screened, pre-forged options,
+   the suggester credit, and the deadline.
+   ---------------------------------------------------------------
+   IMPORTANT — counts here are stored in THIS browser only (a live
+   preview), NOT shared between visitors. For a real shared count:
+     • run the actual poll on your stream platform (YouTube/X), OR
+     • replace readCounts()/writeCounts() below with calls to a
+       backend (a tiny Cloudflare Worker + KV is ideal — see notes).
+============================================================ */
+const VOTE = {
+  // set a real deadline, or null to keep it always open
+  deadline: null,            // e.g. "2026-06-20T20:00:00+00:00"
+  seedVotes: true,           // show some starter numbers so bars aren't all empty
+  options: [
+    { id:"momo",   icon:"💸", name:"MoMo Fee Calculator",
+      desc:"Type what you're sending — see the fee and what lands.",
+      by:"@suggester1", seed:34 },
+    { id:"trotro", icon:"🚐", name:"Which Trotro?",
+      desc:"Pick start & destination, get the route and fare.",
+      by:"@suggester2", seed:41 },
+    { id:"quiz",   icon:"📚", name:"NSMQ Quiz Trainer",
+      desc:"Drill past questions, track your score, learn fast.",
+      by:"@suggester3", seed:27 }
+  ]
+};
+
+const VKEY='ohwp_vote_v1', VCHOICE='ohwp_vote_choice_v1';
+function readCounts(){
+  try{const s=JSON.parse(localStorage.getItem(VKEY));if(s)return s;}catch(e){}
+  const init={};VOTE.options.forEach(o=>init[o.id]=VOTE.seedVotes?o.seed:0);
+  return init;
+}
+function writeCounts(c){try{localStorage.setItem(VKEY,JSON.stringify(c));}catch(e){}}
+function myChoice(){try{return localStorage.getItem(VCHOICE);}catch(e){return null;}}
+function setChoice(id){try{localStorage.setItem(VCHOICE,id);}catch(e){}}
+function clearChoice(){try{localStorage.removeItem(VCHOICE);}catch(e){}}
+
+let counts=readCounts();
+const ballot=document.getElementById('ballot');
+const voteWrap=document.getElementById('voteWrap');
+const voteStatusEl=document.getElementById('voteStatus');
+
+function isClosed(){return VOTE.deadline && new Date() > new Date(VOTE.deadline);}
+
+function renderVote(){
+  const chosen=myChoice();
+  const closed=isClosed();
+  const total=Object.values(counts).reduce((a,b)=>a+b,0);
+  voteWrap.classList.toggle('hasvoted', !!chosen || closed);
+  voteWrap.classList.toggle('closed', closed);
+  voteStatusEl.classList.toggle('closed', closed);
+  let leadId=null,leadN=-1;
+  for(const o of VOTE.options){if(counts[o.id]>leadN){leadN=counts[o.id];leadId=o.id;}}
+
+  ballot.innerHTML=VOTE.options.map(o=>{
+    const n=counts[o.id]||0;
+    const pct=total? Math.round(n/total*100):0;
+    const showResults = !!chosen || closed;
+    return `<div class="opt-card ${chosen===o.id?'voted':''} ${(showResults&&leadId===o.id&&total>0)?'leading':''}" data-id="${o.id}">
+      <div class="opt-fill" style="width:${showResults?pct:0}%"></div>
+      <div class="opt-inner">
+        <div class="opt-top">
+          <span class="opt-ic">${o.icon}</span>
+          <span class="opt-name">${o.name}</span>
+          <span class="opt-pct">${pct}%</span>
+        </div>
+        <div class="opt-desc">${o.desc}</div>
+        <div class="opt-meta">Suggested by <b>${o.by}</b>${chosen===o.id?' · your pick ✓':''}</div>
+        ${(!showResults)?`<div class="opt-action">▶ Tap to vote</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('voteTotal').textContent=total;
+}
+
+ballot.addEventListener('click',e=>{
+  const card=e.target.closest('.opt-card');if(!card)return;
+  if(isClosed())return;
+  if(myChoice())return;            // one vote per device
+  const id=card.dataset.id;
+  counts[id]=(counts[id]||0)+1;
+  writeCounts(counts);setChoice(id);
+  renderVote();
+});
+document.getElementById('voteReset').addEventListener('click',()=>{
+  const c=myChoice();if(!c)return;
+  counts[c]=Math.max(0,(counts[c]||0)-1);
+  writeCounts(counts);clearChoice();renderVote();
+});
+
+// countdown
+function tickTimer(){
+  const el=document.getElementById('voteTimer');
+  const st=document.getElementById('voteState');
+  if(!VOTE.deadline){el.textContent='';st.textContent='Voting is open';return;}
+  const diff=new Date(VOTE.deadline)-new Date();
+  if(diff<=0){el.textContent='Closed';st.textContent='Voting has ended';renderVote();return;}
+  const d=Math.floor(diff/86400000),h=Math.floor(diff/3600000)%24,m=Math.floor(diff/60000)%60,s=Math.floor(diff/1000)%60;
+  el.textContent=(d?d+'d ':'')+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  st.textContent='Voting closes in';
+}
+renderVote();tickTimer();setInterval(tickTimer,1000);
+
+
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
