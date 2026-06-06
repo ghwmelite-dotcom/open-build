@@ -898,8 +898,8 @@ ballot.addEventListener('click', async e=>{
     });
     if(!r.ok) throw new Error('bad status');
     applyServer(await r.json());
-  }catch(e){                        // fallback: reflect the vote locally
-    counts[id]=(counts[id]||0)+1; renderVote();
+  }catch(e){                        // fallback: persist locally so the vote survives reload (matches offline path)
+    counts[id]=(counts[id]||0)+1; writeCounts(counts); renderVote();
   }
 });
 
