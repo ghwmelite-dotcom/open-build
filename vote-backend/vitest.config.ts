@@ -1,13 +1,14 @@
-import { defineConfig } from "vitest/config";
-import { cloudflarePool } from "@cloudflare/vitest-pool-workers";
+import { defineWorkersConfig } from "@cloudflare/vitest-pool-workers/config";
 
-export default defineConfig({
+export default defineWorkersConfig({
   test: {
-    pool: cloudflarePool({
-      wrangler: { configPath: "./wrangler.toml" },
-      miniflare: {
-        bindings: { ADMIN_SECRET: "test-secret", ALLOWED_ORIGIN: "*" },
+    poolOptions: {
+      workers: {
+        wrangler: { configPath: "./wrangler.toml" },
+        miniflare: {
+          bindings: { ADMIN_SECRET: "test-secret", ALLOWED_ORIGIN: "*" },
+        },
       },
-    }),
+    },
   },
 });
