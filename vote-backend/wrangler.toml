@@ -1,0 +1,14 @@
+name = "ohwp-vote"
+main = "src/worker.ts"
+compatibility_date = "2025-01-01"
+
+[[durable_objects.bindings]]
+name = "POLL"
+class_name = "PollDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PollDO"]
+
+[vars]
+ALLOWED_ORIGIN = "*"
