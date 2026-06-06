@@ -116,6 +116,39 @@ describe("get", () => {
   });
 });
 
+describe("input validation", () => {
+  it("rejects a vote with a malformed JSON body (400, not 500)", async () => {
+    await init("p-badjson", OPTS);
+    const res = await SELF.fetch(`${BASE}/api/poll/p-badjson/vote`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{ not json",
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it("rejects a vote with non-string fields (400)", async () => {
+    await init("p-badtypes", OPTS);
+    const res = await SELF.fetch(`${BASE}/api/poll/p-badtypes/vote`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ optionId: 42, voterToken: { spoof: 1 } }),
+    });
+    expect(res.status).toBe(400);
+    const state = (await (await get("p-badtypes")).json()) as any;
+    expect(state.total).toBe(0); // nothing was counted
+  });
+
+  it("rejects init with a malformed JSON body (400, not 500)", async () => {
+    const res = await SELF.fetch(`${BASE}/api/poll/p-badinit/init`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${ADMIN}` },
+      body: "{ not json",
+    });
+    expect(res.status).toBe(400);
+  });
+});
+
 describe("cors", () => {
   it("answers OPTIONS preflight with CORS headers", async () => {
     const res = await SELF.fetch(`${BASE}/api/poll/p-cors`, { method: "OPTIONS" });

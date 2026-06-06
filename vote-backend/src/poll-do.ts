@@ -33,7 +33,12 @@ export class PollDO {
     if (auth !== `Bearer ${this.env.ADMIN_SECRET}`) {
       return json({ error: "unauthorized" }, 401);
     }
-    const body = (await request.json()) as InitBody;
+    let body: InitBody;
+    try {
+      body = (await request.json()) as InitBody;
+    } catch {
+      return json({ error: "bad_request" }, 400);
+    }
     if (!Array.isArray(body.options) || body.options.length === 0) {
       return json({ error: "options_required" }, 400);
     }
@@ -55,8 +60,18 @@ export class PollDO {
   }
 
   private async vote(request: Request, id: string): Promise<Response> {
-    const body = (await request.json()) as VoteBody;
-    if (!body.optionId || !body.voterToken) {
+    let body: VoteBody;
+    try {
+      body = (await request.json()) as VoteBody;
+    } catch {
+      return json({ error: "bad_request" }, 400);
+    }
+    if (
+      typeof body.optionId !== "string" ||
+      typeof body.voterToken !== "string" ||
+      !body.optionId ||
+      !body.voterToken
+    ) {
       return json({ error: "bad_request" }, 400);
     }
 
