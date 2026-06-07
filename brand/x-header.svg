@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" viewBox="0 0 1500 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c9a5d"/>
+      <stop offset="0.55" stop-color="#076b3f"/>
+      <stop offset="1" stop-color="#03261a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.28" cy="0.45" r="0.45">
+      <stop offset="0" stop-color="#FCD116" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#FCD116" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.45" r="0.8">
+      <stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.36"/>
+    </radialGradient>
+  </defs>
+  <rect width="1500" height="500" fill="url(#bg)"/>
+  <rect width="1500" height="500" fill="url(#glow)"/>
+  <rect width="1500" height="500" fill="url(#vig)"/>
+
+  <circle cx="430" cy="222" r="150" fill="none" stroke="#FCD116" stroke-width="34"/>
+
+  <g font-family="Georgia, 'Times New Roman', serif">
+    <text x="640" y="248" font-size="96" font-weight="700" fill="#ffffff">Open Build</text>
+    <text x="644" y="312" font-size="40" fill="#FCD116">Real problems, built live.</text>
+  </g>
+  <text x="646" y="356" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#bcd6c6">a show by OHWPStudios · open-build.ohwpstudios.org</text>
+
+  <rect x="0" y="484" width="1500" height="12" fill="#FCD116"/>
+  <rect x="0" y="484" width="1500" height="4" fill="#CE1126"/>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c9a5d"/>
+      <stop offset="0.55" stop-color="#076b3f"/>
+      <stop offset="1" stop-color="#03261a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FCD116" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#FCD116" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.5" r="0.8">
+      <stop offset="0.5" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.42"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <rect width="1280" height="720" fill="url(#glow)"/>
+  <rect width="1280" height="720" fill="url(#vig)"/>
+
+  <circle cx="1050" cy="362" r="210" fill="none" stroke="#FCD116" stroke-width="50"/>
+
+  <g>
+    <rect x="62" y="54" width="184" height="62" rx="31" fill="#CE1126"/>
+    <circle cx="102" cy="85" r="13" fill="#ffffff"/>
+    <text x="130" y="97" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#ffffff" letter-spacing="2">LIVE</text>
+  </g>
+
+  <g font-family="Georgia, 'Times New Roman', serif" font-weight="700">
+    <text x="66" y="318" font-size="108" fill="#ffffff">Real problems,</text>
+    <text x="66" y="456" font-size="138" fill="#FCD116">built live.</text>
+  </g>
+  <text x="72" y="528" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700" fill="#cfe3d7">You pick what we build next.</text>
+  <text x="72" y="658" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#FCD116">open-build.ohwpstudios.org</text>
+
+  <rect x="0" y="702" width="1280" height="18" fill="#FCD116"/>
+  <rect x="0" y="702" width="1280" height="6" fill="#CE1126"/>
+</svg>
