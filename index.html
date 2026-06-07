@@ -69,6 +69,13 @@
   #topbar nav a{padding:8px 14px;border-radius:10px;color:var(--muted);font-size:14px;font-weight:600;transition:.2s}
   #topbar nav a:hover{color:#fff;background:var(--panel)}
   @media(max-width:620px){#topbar nav{display:none}}
+  #topbar .studio-link{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+    color:#0a0e0c;background:var(--gold);padding:8px 15px;border-radius:100px;
+    font-size:13.5px;font-weight:800;transition:.2s}
+  #topbar .studio-link:hover{filter:brightness(1.07);transform:translateY(-1px)}
+  #topbar .studio-link:focus-visible{outline:2px solid #fff;outline-offset:2px}
+  @media(max-width:620px){#topbar .studio-link{margin-left:auto}}
+  @media(max-width:380px){#topbar .studio-link{font-size:12.5px;padding:7px 12px}}
 
   /* ===== Hero ===== */
   .hero{position:relative;padding:148px 0 70px;overflow:hidden}
@@ -344,7 +351,7 @@
   <div class="wrap">
     <a href="#top" class="logo">
       <span class="mark"><svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><circle cx="32" cy="32" r="22" fill="none" stroke="#FCD116" stroke-width="10"/></svg></span>
-      <span class="nm"><b>OHWP</b><span>Studios</span></span>
+      <span class="nm"><b>Open</b><span>Build</span></span>
     </a>
     <nav>
       <a href="#builds">Builds</a>
@@ -353,6 +360,7 @@
       <a href="#vote">Vote</a>
       <a href="#community">Suggest</a>
     </nav>
+    <a class="studio-link" href="https://ohwpstudios.org/" target="_blank" rel="noopener" aria-label="Visit OHWPStudios.org (opens in a new tab)">OHWPStudios.org ↗</a>
   </div>
 </header>
 
