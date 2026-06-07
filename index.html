@@ -180,6 +180,14 @@
     background:linear-gradient(135deg,var(--gold),var(--gold-d))}
   .stepline .sc h4{font-size:16.5px;color:#fff;margin-bottom:5px}
   .stepline .sc p{font-size:14px;color:var(--muted);margin-bottom:9px}
+  .startblock{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:18px}
+  .startblock .sb-meta{font-size:13.5px;color:var(--muted);margin-bottom:8px}
+  .startblock .sb-h{display:block;color:#fff;font-weight:700;margin-bottom:4px}
+  .startblock .sb-paths{font-size:13.5px;color:var(--muted);line-height:1.7}
+  .startblock .sb-paths b{color:#fff;font-weight:600}
+  .sc .see{font-size:13px;color:#7fd49b;margin-top:8px;line-height:1.5}
+  .sc .fix{font-size:13px;color:#e8c372;margin-top:5px;line-height:1.5}
+  .sc .see b,.sc .fix b{font-weight:600}
   .prompt{background:var(--ink);border:1px solid var(--line-l);border-left:3px solid var(--green);
     border-radius:10px;padding:12px 14px;font-size:13px;color:#cfe0d6;position:relative;font-style:italic}
   .prompt .lbl{display:block;font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.12em;
@@ -674,8 +682,19 @@ HOW.forEach((h,i)=>{
 
 /* ============ MODAL ============ */
 const scrim=document.getElementById('scrim'), modal=document.getElementById('modal');
+function pathsText(b){
+  const cc = `<b>1. Claude Code (paid):</b> paste each “Copy prompt” into Claude Code and follow along.`;
+  const web = b.webBuildable
+    ? `<b>2. Free Claude.ai web:</b> paste the same prompt into a new chat at claude.ai — the app appears in the preview (an Artifact) you can use right away and copy.`
+    : `<b>2. Free Claude.ai web:</b> this build needs tools on your computer and can’t be rebuilt in a single chat — use the live tool instead (the button appears on the card once it’s shipped).`;
+  return cc + '<br>' + web;
+}
 function openBuild(i){
   const b=BUILDS[i];
+  const startBlock = b.time ? `<div class="startblock">
+        <div class="sb-meta">⏱ ${b.time} · ${b.setup}</div>
+        <div class="sb-paths"><span class="sb-h">Two ways to follow along:</span>${pathsText(b)}</div>
+      </div>` : '';
   modal.innerHTML=`
     <div class="mhead">
       <button class="close" onclick="closeBuild()">✕</button>
@@ -684,6 +703,7 @@ function openBuild(i){
       <p>${b.desc}</p>
     </div>
     <div class="mbody">
+      ${startBlock}
       ${b.steps.map((s,n)=>`
         <div class="stepline">
           <div class="sn">${b.steps.length>1?String.fromCharCode(65+n):'•'}</div>
@@ -691,9 +711,11 @@ function openBuild(i){
             <h4>${s.h}</h4>
             <p>${s.p}</p>
             ${s.prompt && s.prompt[0]!=='(' ? `<div class="prompt">
-              <span class="lbl">Type this to Claude Code</span>
+              <span class="lbl">Copy prompt</span>
               <button class="copy" onclick="copyP(this)">Copy</button>
               ${s.prompt}</div>`:`<div class="note" style="background:var(--panel);border-color:var(--line-l);color:var(--muted)">${s.prompt}</div>`}
+            ${s.see?`<div class="see">✓ <b>You'll see:</b> ${s.see}</div>`:''}
+            ${s.fix?`<div class="fix">⚠ <b>If stuck:</b> ${s.fix}</div>`:''}
             ${s.clip?`<div class="clip"><b>📹 ${s.clip.split(':')[0]}:</b>${s.clip.split(':').slice(1).join(':')}</div>`:''}
           </div>
         </div>`).join('')}
@@ -707,7 +729,7 @@ function openBuild(i){
 function closeBuild(){scrim.classList.remove('show');document.body.style.overflow=''}
 function copyP(btn){
   const t=btn.parentElement.childNodes;
-  let txt=btn.parentElement.textContent.replace('Type this to Claude Code','').replace('Copy','').trim();
+  let txt=btn.parentElement.textContent.replace('Copy prompt','').replace('Copy','').trim();
   navigator.clipboard.writeText(txt).then(()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy',1500)});
 }
 grid.addEventListener('click',e=>{const b=e.target.closest('.open');if(b)openBuild(+b.dataset.i)});
