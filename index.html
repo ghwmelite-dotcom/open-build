@@ -267,6 +267,10 @@
   .share .sbtn:hover{background:var(--panel);border-color:var(--gold)}
   .share .sbtn.wa:hover{border-color:#25D366;color:#25D366}
   .share .sbtn.tg:hover{border-color:#2AABEE;color:#2AABEE}
+  /* live presence chip */
+  .vwatch{display:none;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:#7fd49b;
+    background:rgba(127,212,155,.1);border:1px solid rgba(127,212,155,.3);padding:3px 10px;border-radius:100px}
+  .vwatch.on{display:inline-flex}
 
   /* ===== Footer ===== */
   footer{padding:46px 0 60px;border-top:1px solid var(--line);margin-top:60px;text-align:center}
@@ -493,6 +497,7 @@
         <span class="vdot"></span>
         <span id="voteState">Voting is open</span>
         <span class="vtimer" id="voteTimer"></span>
+        <span class="vwatch" id="voteWatching"></span>
       </div>
       <div class="ballot" id="ballot"></div>
       <div class="vote-foot">
@@ -1037,11 +1042,17 @@ function renderVote(){
 }
 
 // Map a server snapshot onto our local display state.
+function setWatching(n){
+  const el=document.getElementById('voteWatching'); if(!el) return;
+  if(typeof n==='number' && n>0){ el.textContent='🟢 '+n+' watching now'; el.classList.add('on'); }
+  else { el.classList.remove('on'); }
+}
 function applyServer(s){
   const next={};
   VOTE.options.forEach(o=>{ next[o.id]= (s.counts && s.counts[o.id]) || 0; });
   counts=next;
   if(s.deadline) VOTE.deadline=s.deadline;
+  if(typeof s.watching==='number') setWatching(s.watching);
   renderVote(); tickTimer();
 }
 
@@ -1089,8 +1100,25 @@ else{
   });
 }
 
-// Live-ish refresh while a backend poll is open.
-if(API){ setInterval(()=>{ if(!isClosed()) loadCounts(); }, 5000); }
+// Live updates: prefer a WebSocket push (instant counts + "watching" presence);
+// fall back to 5s polling if the socket can't connect or drops.
+if(API){
+  let ws=null, pollTimer=null;
+  function startPolling(){ if(pollTimer) return; pollTimer=setInterval(()=>{ if(!isClosed()) loadCounts(); }, 5000); }
+  function stopPolling(){ if(pollTimer){ clearInterval(pollTimer); pollTimer=null; } }
+  function openSocket(){
+    try{
+      const wsUrl=API.replace(/^http/,'ws')+'/api/poll/'+VOTE.api.pollId+'/ws';
+      ws=new WebSocket(wsUrl);
+      ws.onopen=()=>{ stopPolling(); };
+      ws.onmessage=ev=>{ try{ const m=JSON.parse(ev.data); if(m.type==='state') applyServer(m); }catch(e){} };
+      ws.onclose=()=>{ setWatching(0); startPolling(); setTimeout(openSocket, 8000); };
+      ws.onerror=()=>{ try{ ws.close(); }catch(e){} };
+    }catch(e){ startPolling(); }
+  }
+  openSocket();
+  startPolling();   // backstop until the socket takes over (cleared on open)
+}
 
 // countdown
 function tickTimer(){

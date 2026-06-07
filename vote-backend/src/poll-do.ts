@@ -8,10 +8,12 @@ function json(data: unknown, status = 200): Response {
 }
 
 export class PollDO {
+  private state: DurableObjectState;
   private storage: DurableObjectStorage;
   private env: Env;
 
   constructor(state: DurableObjectState, env: Env) {
+    this.state = state;
     this.storage = state.storage;
     this.env = env;
   }
@@ -22,10 +24,53 @@ export class PollDO {
     const id = parts[2] ?? "";
     const action = parts[3] ?? "";
 
+    if (action === "ws" && request.headers.get("Upgrade") === "websocket") {
+      return this.handleSocket(id);
+    }
     if (request.method === "POST" && action === "init") return this.init(request, id);
     if (request.method === "POST" && action === "vote") return this.vote(request, id);
     if (request.method === "GET" && action === "") return json(await this.snapshot(id));
     return json({ error: "not_found" }, 404);
+  }
+
+  // Accept a hibernatable WebSocket; push current state to it and update presence.
+  private async handleSocket(id: string): Promise<Response> {
+    if (id) await this.storage.put("pollId", id);
+    const pair = new WebSocketPair();
+    const client = pair[0];
+    const server = pair[1];
+    this.state.acceptWebSocket(server);
+    await this.broadcastState();
+    return new Response(null, { status: 101, webSocket: client });
+  }
+
+  async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): Promise<void> {
+    if (message === "ping") {
+      try {
+        ws.send(JSON.stringify({ type: "pong" }));
+      } catch {}
+    }
+  }
+
+  async webSocketClose(ws: WebSocket): Promise<void> {
+    try {
+      ws.close();
+    } catch {}
+    await this.broadcastState();
+  }
+
+  // Send the live poll state + current viewer count to every connected socket.
+  private async broadcastState(): Promise<void> {
+    const sockets = this.state.getWebSockets();
+    if (sockets.length === 0) return;
+    const id = (await this.storage.get<string>("pollId")) ?? "";
+    const snap = await this.snapshot(id);
+    const msg = JSON.stringify({ type: "state", ...snap, watching: sockets.length });
+    for (const ws of sockets) {
+      try {
+        ws.send(msg);
+      } catch {}
+    }
   }
 
   private async init(request: Request, id: string): Promise<Response> {
@@ -52,10 +97,12 @@ export class PollDO {
       counts[o.id] = body.reset ? 0 : prev[o.id] ?? 0;
     }
 
+    await this.storage.put("pollId", id);
     await this.storage.put("options", body.options);
     await this.storage.put("deadline", body.deadline ?? null);
     await this.storage.put("counts", counts);
 
+    await this.broadcastState();
     return json(await this.snapshot(id));
   }
 
@@ -98,6 +145,7 @@ export class PollDO {
     await this.storage.put("counts", counts);
     await this.storage.put(voterKey, body.optionId);
 
+    await this.broadcastState();
     return json(await this.snapshot(id));
   }
 

@@ -123,6 +123,9 @@ export default {
     }
 
     const stub = env.POLL.get(env.POLL.idFromName(id));
+    if (request.headers.get("Upgrade") === "websocket") {
+      return stub.fetch(request); // WebSocket upgrade: pass the 101 + socket through untouched
+    }
     const res = await stub.fetch(request);
     return withCors(res, origin);
   },
