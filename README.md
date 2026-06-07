@@ -290,9 +290,8 @@ civic topics.
 
 ## License
 
-No open-source license is set yet — until a `LICENSE` file is added, default
-copyright applies. The *builds* are nonetheless designed to be freely replicable
-by viewers; a license will be chosen as the project opens up.
+Released under the [MIT License](LICENSE) © 2026 OHWPStudios. The builds are
+designed to be freely replicable by viewers — fork it, rebuild it, ship it.
 
 ---
 
