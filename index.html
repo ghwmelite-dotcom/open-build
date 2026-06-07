@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Open Build · OHWPStudios — Real Problems, Built Simple</title>
 <meta name="description" content="OHWPStudios builds tools that solve real problems — live, and simple enough that you could build them yourself. A growing collection of Ghana-rooted, replicable builds.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Open Build">
+<meta property="og:title" content="Open Build — real problems, built live">
+<meta property="og:description" content="A livestream show where the community names a real Ghanaian problem and we build it live with Claude Code — simple enough to rebuild yourself. Vote on what's next.">
+<meta property="og:url" content="https://open-build.ohwpstudios.org/">
+<meta property="og:image" content="https://open-build.ohwpstudios.org/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Open Build — real problems, built live">
+<meta name="twitter:description" content="Community-chosen tools, built live with Claude Code. Vote on the next build.">
+<meta name="twitter:image" content="https://open-build.ohwpstudios.org/og-card.png">
 <meta name="theme-color" content="#0a0e0c">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%230a8f56'/%3E%3Ccircle%20cx='32'%20cy='32'%20r='19'%20fill='none'%20stroke='%23FCD116'%20stroke-width='6'/%3E%3C/svg%3E">
 <style>
@@ -240,6 +252,21 @@
   .sf-msg{font-size:13.5px;margin:2px 0 0;min-height:1.2em}
   .sf-msg.ok{color:#7fd49b}
   .sf-msg.err{color:#f0a8a8}
+  /* suggester credit (shipped cards) */
+  .build .credit{font-size:12.5px;font-weight:700;color:var(--gold);background:rgba(252,209,22,.08);
+    border:1px solid rgba(252,209,22,.25);padding:7px 11px;border-radius:9px;margin-bottom:12px}
+  .build .credit b{color:#fff}
+  .mhead .mcredit{font-size:13.5px;color:var(--gold);margin-top:10px;font-weight:600}
+  .mhead .mcredit b{color:#fff}
+  /* share row */
+  .share{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .share .share-l{font-size:13px;color:var(--muted);font-weight:600}
+  .share .sbtn{font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:100px;border:1px solid var(--line-l);
+    color:#fff;background:rgba(255,255,255,.04);cursor:pointer;text-decoration:none;transition:.2s;
+    min-height:38px;display:inline-flex;align-items:center;gap:6px}
+  .share .sbtn:hover{background:var(--panel);border-color:var(--gold)}
+  .share .sbtn.wa:hover{border-color:#25D366;color:#25D366}
+  .share .sbtn.tg:hover{border-color:#2AABEE;color:#2AABEE}
 
   /* ===== Footer ===== */
   footer{padding:46px 0 60px;border-top:1px solid var(--line);margin-top:60px;text-align:center}
@@ -375,6 +402,7 @@
       <a href="#builds" class="btn primary">See what's coming →</a>
       <a href="#community" class="btn ghost">Suggest a problem</a>
     </div>
+    <div id="heroShare"></div>
     <div class="stats">
       <div class="s"><b id="stCount">5</b><span>BUILDS PLANNED</span></div>
       <div class="s"><b>100%</b><span>FOLLOW-ALONG</span></div>
@@ -527,6 +555,10 @@
      3. paste the deployed link into  url:  e.g.  url:"https://accra-flood-map.pages.dev"
    The card will then show a gold "Visit the live tool" button and a pulsing Live dot,
    and the top counter will switch to "BUILDS SHIPPED" automatically.
+   4. (optional) credit the community on the shipped card by adding:
+        suggestedBy:"@handle",  votePct:62
+      -> renders "🏆 Community pick · @handle · 62%" on the card and a fuller
+         "You picked this..." line in the modal (only shown on live builds).
    STATUS OPTIONS:  "live" | "next" | "upcoming" | "soon"
 ============================================================ */
 const BUILDS = [
@@ -706,6 +738,7 @@ BUILDS.forEach((b,i)=>{
     <h3>${b.title}</h3>
     <div class="desc">${b.desc}</div>
     <div class="pills">${b.pills.map(p=>`<span class="pill">${p}</span>`).join('')}</div>
+    ${b.status==='live'&&b.suggestedBy?`<div class="credit">🏆 Community pick · <b>${b.suggestedBy}</b>${b.votePct?` · ${b.votePct}%`:''}</div>`:''}
     ${b.status==='live'&&b.url?`<a class="visit" href="${b.url}" target="_blank" rel="noopener">🔗 Visit the live tool →</a>`:''}
     <button class="open" data-i="${i}">Open the build guide →</button>`;
   grid.appendChild(el);
@@ -743,6 +776,7 @@ function openBuild(i){
       <span class="num">${b.num}</span>
       <h3>${b.icon} ${b.title}</h3>
       <p>${b.desc}</p>
+      ${b.status==='live'&&b.suggestedBy?`<p class="mcredit">🏆 You picked this — suggested by <b>${b.suggestedBy}</b>${b.votePct?`, won with ${b.votePct}% of the vote`:''}.</p>`:''}
     </div>
     <div class="mbody">
       ${startBlock}
@@ -765,6 +799,7 @@ function openBuild(i){
     <div class="mfoot">
       <span class="disc">⚠️ ${b.disclaimer}</span>
       ${b.status==='live'&&b.url?`<a class="btn primary" style="padding:10px 18px;font-size:14px" href="${b.url}" target="_blank" rel="noopener">🔗 Visit the live tool</a>`:''}
+      ${b.status==='live'&&b.url?shareRow(b.url, `${b.title} — built live on Open Build:`, 'Share:'):''}
     </div>`;
   scrim.classList.add('show');document.body.style.overflow='hidden';
 }
@@ -1069,6 +1104,25 @@ function tickTimer(){
   st.textContent='Voting closes in';
 }
 loadCounts();tickTimer();setInterval(tickTimer,1000);
+
+// ===== Share (hero + shipped builds) =====
+function shareRow(url, text, label){
+  const u=encodeURIComponent(url), t=encodeURIComponent(text), tu=encodeURIComponent(text+' '+url);
+  return `<div class="share"><span class="share-l">${label}</span>`+
+    `<a class="sbtn wa" target="_blank" rel="noopener" href="https://wa.me/?text=${tu}">WhatsApp</a>`+
+    `<a class="sbtn x" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=${t}&url=${u}">X</a>`+
+    `<a class="sbtn tg" target="_blank" rel="noopener" href="https://t.me/share/url?url=${u}&text=${t}">Telegram</a>`+
+    `<button class="sbtn copy3" type="button" data-url="${url}">Copy link</button></div>`;
+}
+(function(){
+  const hs=document.getElementById('heroShare');
+  if(hs) hs.innerHTML=shareRow('https://open-build.ohwpstudios.org/','Open Build — real problems, built live. Vote on the next build','Share Open Build:');
+})();
+document.addEventListener('click', e=>{
+  const c=e.target.closest('.copy3'); if(!c) return;
+  e.preventDefault();
+  navigator.clipboard.writeText(c.dataset.url).then(()=>{const o=c.textContent;c.textContent='Copied ✓';setTimeout(()=>{c.textContent=o;},1500);}).catch(()=>{});
+});
 
 // ===== Community suggestion form -> /api/suggest (Telegram) =====
 (function(){
