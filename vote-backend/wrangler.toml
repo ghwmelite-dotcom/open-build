@@ -14,3 +14,5 @@ new_sqlite_classes = ["PollDO"]
 
 [vars]
 ALLOWED_ORIGIN = "https://open-build.pages.dev,https://open-build.ohwpstudios.org,https://www.open-build.ohwpstudios.org"
+TELEGRAM_CHANNEL_ID = "@openbuildch"
+PUBLIC_HUB_URL = "https://open-build.ohwpstudios.org"

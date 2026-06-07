@@ -19,6 +19,11 @@ export interface InitBody {
   options: PollOption[];
   deadline?: string | null;
   reset?: boolean;
+  announce?: boolean; // when true, auto-post a "vote is open" message to the channel
+}
+
+export interface AnnounceBody {
+  text: string;
 }
 
 export interface VoteBody {
@@ -39,5 +44,7 @@ export interface Env {
   ADMIN_SECRET: string;
   ALLOWED_ORIGIN: string;
   TELEGRAM_BOT_TOKEN: string;
-  TELEGRAM_CHAT_ID: string;
+  TELEGRAM_CHAT_ID: string;      // private suggestions group
+  TELEGRAM_CHANNEL_ID: string;   // public announcements channel, e.g. "@openbuildch"
+  PUBLIC_HUB_URL: string;        // hub URL used in announcement links
 }

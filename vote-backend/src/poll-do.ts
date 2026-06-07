@@ -1,3 +1,4 @@
+import { tgSend, escapeHtml } from "./telegram";
 import type { Env, PollOption, PollStateResponse, InitBody, VoteBody } from "./types";
 
 function json(data: unknown, status = 200): Response {
@@ -103,6 +104,16 @@ export class PollDO {
     await this.storage.put("counts", counts);
 
     await this.broadcastState();
+
+    if (body.announce) {
+      const names = body.options.map((o) => "• " + escapeHtml(o.name)).join("\n");
+      const text =
+        "🗳️ <b>Voting is open — you decide what we build next!</b>\n\n" +
+        names +
+        "\n\n👉 Vote now: " +
+        (this.env.PUBLIC_HUB_URL || "");
+      await tgSend(this.env, this.env.TELEGRAM_CHANNEL_ID, text);
+    }
     return json(await this.snapshot(id));
   }
 

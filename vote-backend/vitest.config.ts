@@ -11,6 +11,8 @@ export default defineConfig({
           ALLOWED_ORIGIN: "https://open-build.pages.dev,https://open-build.ohwpstudios.org",
           TELEGRAM_BOT_TOKEN: "test-token",
           TELEGRAM_CHAT_ID: "-100test",
+          TELEGRAM_CHANNEL_ID: "@test_channel",
+          PUBLIC_HUB_URL: "https://example.test",
         },
       },
     }),

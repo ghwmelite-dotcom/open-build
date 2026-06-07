@@ -1,5 +1,6 @@
 import { PollDO } from "./poll-do";
-import type { Env, SuggestBody } from "./types";
+import { tgSend, escapeHtml } from "./telegram";
+import type { Env, SuggestBody, AnnounceBody } from "./types";
 
 export { PollDO };
 
@@ -53,10 +54,6 @@ function clip(value: unknown, max: number): string {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
-function escapeHtml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
 // Forwards a community build suggestion to the host's Telegram group.
 // Stateless: validate -> (honeypot drop) -> Telegram sendMessage.
 async function handleSuggest(request: Request, env: Env): Promise<Response> {
@@ -84,18 +81,24 @@ async function handleSuggest(request: Request, env: Env): Promise<Response> {
   if (handle) lines.push(`<b>From:</b> ${escapeHtml(handle)}`);
   if (link) lines.push(`<b>Link:</b> ${escapeHtml(link)}`);
 
-  const tg = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: env.TELEGRAM_CHAT_ID,
-      text: lines.join("\n"),
-      parse_mode: "HTML",
-      disable_web_page_preview: true,
-    }),
-  });
-  if (!tg.ok) return json({ error: "telegram_failed" }, 502);
-  return json({ ok: true });
+  const ok = await tgSend(env, env.TELEGRAM_CHAT_ID, lines.join("\n"));
+  return ok ? json({ ok: true }) : json({ error: "telegram_failed" }, 502);
+}
+
+// Admin-gated: post an arbitrary announcement to the public channel.
+async function handleAnnounce(request: Request, env: Env): Promise<Response> {
+  const auth = request.headers.get("Authorization") ?? "";
+  if (auth !== `Bearer ${env.ADMIN_SECRET}`) return json({ error: "unauthorized" }, 401);
+  let body: AnnounceBody;
+  try {
+    body = (await request.json()) as AnnounceBody;
+  } catch {
+    return json({ error: "bad_request" }, 400);
+  }
+  const text = typeof body.text === "string" ? body.text.trim() : "";
+  if (!text) return json({ error: "text_required" }, 400);
+  const ok = await tgSend(env, env.TELEGRAM_CHANNEL_ID, text.slice(0, 3500));
+  return ok ? json({ ok: true }) : json({ error: "telegram_failed" }, 502);
 }
 
 export default {
@@ -111,6 +114,11 @@ export default {
     if (url.pathname === "/api/suggest") {
       if (request.method !== "POST") return jsonError("method_not_allowed", 405, origin);
       return withCors(await handleSuggest(request, env), origin);
+    }
+
+    if (url.pathname === "/api/announce") {
+      if (request.method !== "POST") return jsonError("method_not_allowed", 405, origin);
+      return withCors(await handleAnnounce(request, env), origin);
     }
 
     if (!url.pathname.startsWith("/api/poll/")) {
