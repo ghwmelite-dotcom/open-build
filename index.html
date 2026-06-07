@@ -790,7 +790,7 @@ const VOTE = {
   deadline: null,            // e.g. "2026-06-20T20:00:00+00:00"
   // Shared backend. Leave base:"" to use the per-browser preview (offline).
   // Set base to the deployed Worker origin to use real shared counts.
-  api: { base: "", pollId: "current" },
+  api: { base: "https://ohwp-vote.ghwmelite.workers.dev", pollId: "current" },
   seedVotes: true,           // show some starter numbers so bars aren't all empty
   options: [
     { id:"momo",   icon:"💸", name:"MoMo Fee Calculator",

@@ -1,4 +1,5 @@
 name = "ohwp-vote"
+account_id = "ea2eb3a9813660dfca2a60e594858538"
 main = "src/worker.ts"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
