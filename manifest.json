@@ -1,0 +1,15 @@
+{
+  "name": "Open Build",
+  "short_name": "Open Build",
+  "description": "Real problems, built live. Community-chosen tools, built with Claude Code — simple enough to rebuild yourself. Vote on what's next.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0e0c",
+  "theme_color": "#0a0e0c",
+  "icons": [
+    { "src": "/open-build-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/open-build-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/open-build-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
