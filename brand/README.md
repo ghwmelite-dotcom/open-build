@@ -14,6 +14,8 @@ Brand marks for **Open Build** (a show by OHWPStudios).
 | `tg-channel.svg` / `.png` | **Telegram announcements channel** photo — gold bell (alerts). |
 | `tg-group.svg` / `.png` | **Telegram suggestions group** photo — gold lightbulb (ideas). |
 | `tg-bot.svg` / `.png` | **Telegram bot** photo — gold robot head. |
+| `channel-banner.svg` / `.png` | 1600×900 channel welcome banner (pin it at the top of the channel). |
+| `live-banner.svg` / `.png` | 1920×1080 live‑stream cover (scales to a 1280×720 YouTube thumbnail). |
 
 ## Colours (Ghana national palette)
 
