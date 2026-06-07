@@ -273,6 +273,21 @@
   .vwatch{display:none;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:#7fd49b;
     background:rgba(127,212,155,.1);border:1px solid rgba(127,212,155,.3);padding:3px 10px;border-radius:100px}
   .vwatch.on{display:inline-flex}
+  /* next-stream countdown */
+  .nextstream{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;font-size:14px;color:var(--muted)}
+  .nextstream.on{display:flex}
+  .nextstream .ns-label{font-weight:700;color:#fff}
+  .nextstream .ns-count{font-weight:700;color:var(--gold)}
+  .nextstream .ns-cal{font-size:12.5px;font-weight:700;color:#fff;border:1px solid var(--line-l);border-radius:100px;padding:6px 12px;text-decoration:none}
+  .nextstream .ns-cal:hover{border-color:var(--gold)}
+  /* builders wall */
+  #alertsBox{margin-top:14px}
+  .builderswall{display:none;margin-top:24px}
+  .builderswall.on{display:block}
+  .builderswall .bw-h{font-size:15px;color:#fff;margin-bottom:10px}
+  .builderswall .bw-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .builderswall .bw-item{font-size:12.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:100px;padding:6px 12px}
+  .builderswall .bw-item b{color:var(--gold)}
 
   /* ===== Footer ===== */
   footer{padding:46px 0 60px;border-top:1px solid var(--line);margin-top:60px;text-align:center}
@@ -409,6 +424,7 @@
       <a href="#community" class="btn ghost">Suggest a problem</a>
     </div>
     <div id="heroShare"></div>
+    <div id="nextStream" class="nextstream"></div>
     <div class="stats">
       <div class="s"><b id="stCount">5</b><span>BUILDS PLANNED</span></div>
       <div class="s"><b>100%</b><span>FOLLOW-ALONG</span></div>
@@ -536,7 +552,9 @@
           <button type="submit" class="btn primary" id="sfBtn">Send suggestion →</button>
           <p id="sfMsg" class="sf-msg" role="status" aria-live="polite"></p>
         </form>
+        <div id="alertsBox"></div>
         <div><span class="vote-soon">🗳️ Vote above · new shortlist each cycle</span></div>
+        <div id="buildersWall" class="builderswall"></div>
       </div>
     </div>
   </div>
@@ -1134,6 +1152,76 @@ function tickTimer(){
   st.textContent='Voting closes in';
 }
 loadCounts();tickTimer();setInterval(tickTimer,1000);
+
+// ====== SITE FEATURES — config-ready; fill these in to activate ======
+const SITE = {
+  // (7) Cloudflare Web Analytics beacon token (Pages dashboard > Web Analytics).
+  //     Leave "" to disable; when set, the privacy-first beacon loads.
+  analyticsToken: "",
+  // (6) Next live stream as an ISO datetime, e.g. "2026-06-19T20:00:00+00:00".
+  //     Leave "" to hide the countdown.
+  nextStream: "",
+  streamTitle: "Open Build — live build",
+  streamUrl: "https://open-build.ohwpstudios.org/",
+  // (5) "Get build alerts" links — fill any; empty ones are hidden.
+  alerts: { telegram: "", youtube: "", x: "" },
+  // (9) Builders wall — add { handle, note } entries; empty = hidden.
+  //     e.g. { handle:"@kojo", note:"suggested Which Trotro?" }
+  builders: []
+};
+
+(function(){
+  // (7) Privacy-first analytics beacon
+  if(SITE.analyticsToken){
+    const s=document.createElement('script'); s.defer=true;
+    s.src='https://static.cloudflareinsights.com/beacon.min.js';
+    s.setAttribute('data-cf-beacon', JSON.stringify({token:SITE.analyticsToken}));
+    document.head.appendChild(s);
+  }
+
+  // (6) Next-stream countdown + add to calendar
+  const nsEl=document.getElementById('nextStream');
+  if(nsEl && SITE.nextStream){
+    const start=new Date(SITE.nextStream);
+    if(!isNaN(start.getTime())){
+      const end=new Date(start.getTime()+90*60000);
+      const fmt=d=>d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+      const gcal='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(SITE.streamTitle)+'&dates='+fmt(start)+'/'+fmt(end)+'&details='+encodeURIComponent('Join the live build: '+SITE.streamUrl);
+      const ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nDTSTART:'+fmt(start)+'\r\nDTEND:'+fmt(end)+'\r\nSUMMARY:'+SITE.streamTitle+'\r\nDESCRIPTION:Join the live build: '+SITE.streamUrl+'\r\nEND:VEVENT\r\nEND:VCALENDAR';
+      nsEl.innerHTML='<span class="ns-label">⏱ Next build:</span> <span class="ns-count" id="nsCount"></span>'
+        +'<a class="ns-cal" target="_blank" rel="noopener" href="'+gcal+'">Add to Google Calendar</a>'
+        +'<a class="ns-cal" download="open-build.ics" href="data:text/calendar;charset=utf-8,'+encodeURIComponent(ics)+'">.ics</a>';
+      nsEl.classList.add('on');
+      const cEl=document.getElementById('nsCount');
+      const tick=()=>{
+        const diff=start-new Date();
+        if(diff<=0){ cEl.textContent='starting soon'; return; }
+        const d=Math.floor(diff/86400000),h=Math.floor(diff/3600000)%24,m=Math.floor(diff/60000)%60,s=Math.floor(diff/1000)%60;
+        cEl.textContent=(d?d+'d ':'')+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+      };
+      tick(); setInterval(tick,1000);
+    }
+  }
+
+  // (5) Get build alerts
+  const abEl=document.getElementById('alertsBox');
+  if(abEl){
+    const a=SITE.alerts||{}, links=[];
+    if(a.telegram) links.push('<a class="sbtn tg" target="_blank" rel="noopener" href="'+a.telegram+'">Telegram</a>');
+    if(a.youtube) links.push('<a class="sbtn" target="_blank" rel="noopener" href="'+a.youtube+'">YouTube</a>');
+    if(a.x) links.push('<a class="sbtn x" target="_blank" rel="noopener" href="'+a.x+'">X</a>');
+    if(links.length){ abEl.innerHTML='<div class="share"><span class="share-l">Get build alerts:</span>'+links.join('')+'</div>'; }
+  }
+
+  // (9) Builders wall
+  const bwEl=document.getElementById('buildersWall');
+  if(bwEl && Array.isArray(SITE.builders) && SITE.builders.length){
+    bwEl.innerHTML='<h3 class="bw-h">Built with the community</h3><div class="bw-list">'
+      + SITE.builders.map(b=>'<span class="bw-item"><b>'+b.handle+'</b>'+(b.note?' · '+b.note:'')+'</span>').join('')
+      + '</div>';
+    bwEl.classList.add('on');
+  }
+})();
 
 // ===== PWA: register the service worker (offline + installable) =====
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }); }
