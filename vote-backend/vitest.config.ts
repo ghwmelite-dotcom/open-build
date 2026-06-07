@@ -6,7 +6,12 @@ export default defineConfig({
     cloudflareTest({
       wrangler: { configPath: "./wrangler.toml" },
       miniflare: {
-        bindings: { ADMIN_SECRET: "test-secret", ALLOWED_ORIGIN: "*" },
+        bindings: {
+          ADMIN_SECRET: "test-secret",
+          ALLOWED_ORIGIN: "*",
+          TELEGRAM_BOT_TOKEN: "test-token",
+          TELEGRAM_CHAT_ID: "-100test",
+        },
       },
     }),
   ],

@@ -26,8 +26,18 @@ export interface VoteBody {
   voterToken: string;
 }
 
+export interface SuggestBody {
+  problem?: string;
+  who?: string;
+  handle?: string;
+  link?: string;
+  hp?: string; // honeypot — real users leave this empty; bots fill it
+}
+
 export interface Env {
   POLL: DurableObjectNamespace;
   ADMIN_SECRET: string;
   ALLOWED_ORIGIN: string;
+  TELEGRAM_BOT_TOKEN: string;
+  TELEGRAM_CHAT_ID: string;
 }
