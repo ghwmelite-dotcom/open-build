@@ -546,9 +546,28 @@ const BUILDS = [
     desc:"Type what you're sending — see the fee and exactly what lands. Tiny to build, hugely relatable.",
     pills:["Money","Quick win","Coming"],
     disclaimer:"Fee structures differ by network and change — check official rates too.",
+    time:"~45 min", setup:"No install needed — a single copy-paste file.", webBuildable:true,
     steps:[
-      {h:"Coming soon", p:"This build's full guide will appear here once it's scoped and streamed.",
-       prompt:"(Guide coming soon — suggest improvements via the community section.)", clip:""}
+      {h:"Set up the fee data", p:"List each network's fee tiers as editable numbers you can correct live.",
+       prompt:"I'm building a Mobile Money fee calculator for Ghana. Create an editable data section at the top of the file with placeholder send-money fee tiers for MTN MoMo, Telecel Cash and AirtelTigo Money — each an array of {minAmount, maxAmount, fee} bands in cedis, plus any cap. Mark every number 'PLACEHOLDER — verify with official rates' so I can correct them on stream. Keep it simple.",
+       see:"A clearly-labelled list of fee bands at the top of the file you can edit.",
+       fix:"If the fees look baked into the logic, ask: 'move every fee into one editable list at the top.'",
+       clip:"CLIP: you correcting the placeholder fees with real rates."},
+      {h:"Build the calculator", p:"A network picker, an amount box, and an instant result.",
+       prompt:"Build a single index.html (HTML+CSS+JS in one file, no external libraries, and no localStorage — use in-memory state only so it runs inside a Claude.ai Artifact) using those fee tiers: a network picker, an amount input, and an instant result showing the fee and exactly what the receiver gets. If the amount is outside the tiers, show a friendly message.",
+       see:"Type an amount → the fee and 'what lands' update instantly.",
+       fix:"If it's blank or errors on load, ask: 'remove any localStorage and use a plain variable.'",
+       clip:"CLIP: first instant fee — type 100, see the cut."},
+      {h:"Make it look good", p:"Style it as a polished, mobile-first OHWPStudios build.",
+       prompt:"Style index.html mobile-first with an OHWPStudios header, Ghana accent colours, a big amount input and network buttons, a clear result card, and a bottom disclaimer that fees differ by network and change — check official rates.",
+       see:"A clean, branded calculator that looks right on a phone.",
+       fix:"If it looks cramped on mobile, ask: 'make it mobile-first with big tap targets.'",
+       clip:"CLIP: plain page → polished branded app."},
+      {h:"Test & ship", p:"Check a few amounts, then publish (or copy the Artifact).",
+       prompt:"Help me test a few amounts against known fees, check the out-of-range message, and that it looks good phone-sized. Then help me deploy to Cloudflare Pages — or, on free Claude.ai web, copy the finished index.html from the Artifact.",
+       see:"Correct fees for several amounts, and a shareable result.",
+       fix:"If a fee looks wrong, correct the placeholder number in the data list at the top.",
+       clip:"CLIP: the live URL — share it, tease Build #004."}
     ]
   },
   {
@@ -557,9 +576,28 @@ const BUILDS = [
     desc:"A clean quiz app that drills past questions, tracks your score, and explains the answers.",
     pills:["Education","Interactive","Coming"],
     disclaimer:"A study aid — always cross-check with official syllabi and past papers.",
+    time:"~50 min", setup:"No install needed — a single copy-paste file.", webBuildable:true,
     steps:[
-      {h:"Coming soon", p:"This build's full guide will appear here once it's scoped and streamed.",
-       prompt:"(Guide coming soon.)", clip:""}
+      {h:"Add your questions", p:"Put the questions in one editable list you can swap out.",
+       prompt:"I'm building a quiz trainer for Ghanaian students (NSMQ/BECE style). Create an editable questions list at the top of the file with ~8 placeholder questions for one subject — each with the question text, four options, the correct option, and a one-line explanation. Mark them 'PLACEHOLDER — replace with real past questions' so I can swap in real ones.",
+       see:"A tidy, editable list of questions at the top of the file.",
+       fix:"If questions are scattered in the code, ask: 'put all questions in one editable list at the top.'",
+       clip:"CLIP: swapping in a real past question."},
+      {h:"Build the quiz engine", p:"One question at a time, mark right/wrong, track score.",
+       prompt:"Build a single index.html (HTML+CSS+JS in one file, no external libraries, no localStorage — in-memory state only so it works in a Claude.ai Artifact): show one question at a time with tappable options, mark right/wrong and show the explanation, track the score, and move to the next.",
+       see:"Tap an answer → it marks correct/wrong and shows why.",
+       fix:"If tapping does nothing, ask: 'use button onClick handlers, not a form submit.'",
+       clip:"CLIP: first right/wrong with the explanation popping up."},
+      {h:"Add the score screen", p:"Show the score, the misses, and a 'Try again'.",
+       prompt:"At the end, show a score screen: 'You scored X out of Y', a short message, the questions missed with their explanations, and a 'Try again' button that restarts the quiz.",
+       see:"A final score with a 'Try again' button that restarts.",
+       fix:"If 'Try again' doesn't reset, ask: 'reset the score and question index on retry.'",
+       clip:"CLIP: the score reveal."},
+      {h:"Style & ship", p:"Polish it mobile-first, then publish (or copy the Artifact).",
+       prompt:"Style it mobile-first with the OHWPStudios header, Ghana accent colours, big tappable options, a progress indicator, and a clear score screen. Add a disclaimer that it's a study aid — cross-check official syllabi. Then deploy to Cloudflare Pages, or copy the finished index.html from the Artifact on free web.",
+       see:"A polished, branded quiz that works on a phone.",
+       fix:"If options overflow on mobile, ask: 'make options full-width and stacked.'",
+       clip:"CLIP: the live URL — share it, tease Build #005."}
     ]
   },
   {
@@ -568,9 +606,28 @@ const BUILDS = [
     desc:"Mapping galamsey's impact from public data — an awareness & monitoring tool, never accusation.",
     pills:["Civic","Maps","Coming"],
     disclaimer:"Awareness tool built from public information only — not enforcement or accusation of individuals.",
+    time:"~2 hrs", setup:"Needs map/data tools on your computer — not a single file.", webBuildable:false,
     steps:[
-      {h:"Coming soon", p:"This build's full guide will appear here once it's scoped and streamed.",
-       prompt:"(Guide coming soon.)", clip:""}
+      {h:"Gather public data (awareness only)", p:"Use only public, official data — nothing that names or accuses any person.",
+       prompt:"I'm building an awareness map of galamsey (illegal mining) impact in Ghana using ONLY public, official data — for example published satellite-derived deforestation or water-turbidity layers, EPA / Forestry Commission reports, or open datasets. Help me find and download suitable open layers for affected regions. This is for public awareness and monitoring only — not enforcement or accusation of any individual.",
+       see:"One or more open, public data layers downloaded.",
+       fix:"If a source needs a login or names individuals, skip it — public, aggregate data only.",
+       clip:"CLIP: the first public dataset loading."},
+      {h:"Turn data into impact zones", p:"Process it into clear impact bands with a methodology note.",
+       prompt:"Process the public data into clear impact bands (for example forest loss or water-quality change over time), saved in a web-friendly format like GeoJSON, with a short methodology note listing the sources.",
+       see:"Impact bands plus a written note of where the data came from.",
+       fix:"If the bands look arbitrary, ask Claude to explain the thresholds in plain words.",
+       clip:"CLIP: impact zones emerging from raw data."},
+      {h:"Build the awareness map", p:"A dark map with the layer, legend, sources and disclaimer.",
+       prompt:"Build a dark MapLibre GL map of the affected regions showing the impact layer, a legend, a methodology/sources panel, and a prominent disclaimer that this is an awareness tool from public data only — not accusation of individuals or enforcement. Put it in a 'website' folder.",
+       see:"A dark map with the impact layer, legend, sources panel and disclaimer.",
+       fix:"If the disclaimer isn't obvious, ask: 'make the awareness-only disclaimer prominent.'",
+       clip:"CLIP: the awareness map coming together."},
+      {h:"Review & ship", p:"Confirm the framing names no one, then deploy.",
+       prompt:"Review the map to confirm the awareness-only framing and that no individual is identified, then help me deploy it to Cloudflare Pages.",
+       see:"A reviewed, deployed awareness map with no individual named.",
+       fix:"If anything could identify a person, remove it before deploying.",
+       clip:"CLIP: the live URL — awareness, responsibly."}
     ]
   }
 ];
