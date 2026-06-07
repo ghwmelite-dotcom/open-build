@@ -288,6 +288,20 @@
   .builderswall .bw-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
   .builderswall .bw-item{font-size:12.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:100px;padding:6px 12px}
   .builderswall .bw-item b{color:var(--gold)}
+  /* admin announce panel (hidden; opened via /#admin) */
+  .adminpanel{padding:40px 0;border-top:1px solid var(--line);background:var(--panel-2)}
+  .adminpanel .ap-card{max-width:560px;margin:0 auto;background:var(--panel);border:1px solid var(--line-l);border-radius:16px;padding:24px}
+  .adminpanel h3{color:#fff;font-size:18px;margin-bottom:6px}
+  .adminpanel .ap-sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+  .adminpanel .ap-row{display:grid;gap:10px;margin-bottom:10px}
+  .adminpanel input,.adminpanel textarea{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--line-l);border-radius:10px;padding:11px 13px;color:#fff;font:inherit;font-size:15px;resize:vertical}
+  .adminpanel input:focus,.adminpanel textarea:focus{outline:none;border-color:var(--gold)}
+  .adminpanel .ap-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .adminpanel .ap-actions .btn{min-height:44px}
+  .adminpanel .ap-msg{font-size:13.5px;margin-top:8px;min-height:1.2em}
+  .adminpanel .ap-msg.ok{color:#7fd49b}
+  .adminpanel .ap-msg.err{color:#f0a8a8}
+  .adminpanel [hidden]{display:none!important}
 
   /* ===== Footer ===== */
   footer{padding:46px 0 60px;border-top:1px solid var(--line);margin-top:60px;text-align:center}
@@ -556,6 +570,27 @@
         <div><span class="vote-soon">🗳️ Vote above · new shortlist each cycle</span></div>
         <div id="buildersWall" class="builderswall"></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="adminPanel" class="adminpanel" hidden>
+  <div class="wrap">
+    <div class="ap-card">
+      <h3>📣 Announce to the channel</h3>
+      <p class="ap-sub">Posts to your Telegram channel. Your admin key is stored in <b>this browser only</b> — never in the page.</p>
+      <div id="apKeyRow" class="ap-row">
+        <input id="apKey" type="password" autocomplete="off" placeholder="Paste your admin key">
+        <button id="apSaveKey" class="btn primary" type="button">Save key on this device</button>
+      </div>
+      <div id="apSendRow" class="ap-row" hidden>
+        <textarea id="apText" rows="3" maxlength="3000" placeholder="e.g. 🔴 We're live now — building this week's winner!"></textarea>
+        <div class="ap-actions">
+          <button id="apSend" class="btn primary" type="button">Send to channel →</button>
+          <button id="apForget" class="btn ghost" type="button">Forget key</button>
+        </div>
+      </div>
+      <p id="apMsg" class="ap-msg" role="status" aria-live="polite"></p>
     </div>
   </div>
 </section>
@@ -1225,6 +1260,40 @@ const SITE = {
 
 // ===== PWA: register the service worker (offline + installable) =====
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('/sw.js').catch(()=>{}); }); }
+
+// ===== Admin announce panel (opened via /#admin; key stays in this browser) =====
+(function(){
+  const panel=document.getElementById('adminPanel'); if(!panel) return;
+  const KEY='ohwp_admin_key_v1';
+  const keyRow=document.getElementById('apKeyRow'), sendRow=document.getElementById('apSendRow'), msg=document.getElementById('apMsg');
+  const getKey=()=>{ try{return localStorage.getItem(KEY)||'';}catch(e){return '';} };
+  function refresh(){ const k=getKey(); keyRow.hidden=!!k; sendRow.hidden=!k; }
+  function reveal(){ panel.hidden=false; refresh(); }
+  if(location.hash==='#admin') reveal();
+  window.addEventListener('hashchange',()=>{ if(location.hash==='#admin') reveal(); });
+  document.getElementById('apSaveKey').addEventListener('click',()=>{
+    const v=document.getElementById('apKey').value.trim(); if(!v){ return; }
+    try{ localStorage.setItem(KEY,v); }catch(e){}
+    document.getElementById('apKey').value=''; msg.textContent='Key saved on this device.'; msg.className='ap-msg ok'; refresh();
+  });
+  document.getElementById('apForget').addEventListener('click',()=>{
+    try{ localStorage.removeItem(KEY); }catch(e){} msg.textContent='Key forgotten on this device.'; msg.className='ap-msg'; refresh();
+  });
+  document.getElementById('apSend').addEventListener('click',async()=>{
+    const text=document.getElementById('apText').value.trim(), k=getKey();
+    if(!text){ msg.textContent='Type a message first.'; msg.className='ap-msg err'; return; }
+    if(!k){ msg.textContent='Save your admin key first.'; msg.className='ap-msg err'; refresh(); return; }
+    if(!API){ msg.textContent='Backend not configured.'; msg.className='ap-msg err'; return; }
+    const btn=document.getElementById('apSend'); btn.disabled=true; const o=btn.textContent; btn.textContent='Sending…';
+    try{
+      const r=await fetch(`${API}/api/announce`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},body:JSON.stringify({text})});
+      if(r.status===401){ msg.textContent='Key rejected — check your admin key.'; msg.className='ap-msg err'; }
+      else if(!r.ok){ throw new Error('bad'); }
+      else { msg.textContent='✅ Posted to the channel.'; msg.className='ap-msg ok'; document.getElementById('apText').value=''; }
+    }catch(e){ msg.textContent='Couldn’t send — please try again.'; msg.className='ap-msg err'; }
+    finally{ btn.disabled=false; btn.textContent=o; }
+  });
+})();
 
 // ===== Share (hero + shipped builds) =====
 function shareRow(url, text, label){
