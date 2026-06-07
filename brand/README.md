@@ -11,6 +11,9 @@ Brand marks for **Open Build** (a show by OHWPStudios).
 | `open-build-icon-192.png` | Smaller icon use. |
 | `open-build-logo-on-dark.svg` / `.png` | Horizontal wordmark for **dark** backgrounds (white text, transparent). |
 | `open-build-logo-on-light.svg` / `.png` | Horizontal wordmark for **light** backgrounds (dark text, transparent). |
+| `tg-channel.svg` / `.png` | **Telegram announcements channel** photo — gold bell (alerts). |
+| `tg-group.svg` / `.png` | **Telegram suggestions group** photo — gold lightbulb (ideas). |
+| `tg-bot.svg` / `.png` | **Telegram bot** photo — gold robot head. |
 
 ## Colours (Ghana national palette)
 
