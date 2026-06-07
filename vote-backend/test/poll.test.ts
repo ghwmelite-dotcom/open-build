@@ -150,9 +150,21 @@ describe("input validation", () => {
 });
 
 describe("cors", () => {
-  it("answers OPTIONS preflight with CORS headers", async () => {
-    const res = await SELF.fetch(`${BASE}/api/poll/p-cors`, { method: "OPTIONS" });
+  it("echoes an allowed Origin on OPTIONS preflight", async () => {
+    const res = await SELF.fetch(`${BASE}/api/poll/p-cors`, {
+      method: "OPTIONS",
+      headers: { Origin: "https://open-build.ohwpstudios.org" },
+    });
     expect(res.status).toBe(204);
-    expect(res.headers.get("Access-Control-Allow-Origin")).toBe("*");
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBe("https://open-build.ohwpstudios.org");
+  });
+
+  it("falls back to the primary origin for a disallowed Origin", async () => {
+    const res = await SELF.fetch(`${BASE}/api/poll/p-cors2`, {
+      method: "OPTIONS",
+      headers: { Origin: "https://evil.example" },
+    });
+    expect(res.status).toBe(204);
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBe("https://open-build.pages.dev");
   });
 });

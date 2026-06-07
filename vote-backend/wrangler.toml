@@ -13,4 +13,4 @@ tag = "v1"
 new_sqlite_classes = ["PollDO"]
 
 [vars]
-ALLOWED_ORIGIN = "https://open-build.pages.dev"
+ALLOWED_ORIGIN = "https://open-build.pages.dev,https://open-build.ohwpstudios.org,https://www.open-build.ohwpstudios.org"

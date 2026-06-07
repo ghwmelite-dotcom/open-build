@@ -82,9 +82,12 @@ describe("suggest", () => {
 });
 
 describe("suggest cors", () => {
-  it("answers OPTIONS preflight with CORS headers", async () => {
-    const res = await SELF.fetch(`${BASE}/api/suggest`, { method: "OPTIONS" });
+  it("echoes an allowed Origin on OPTIONS preflight", async () => {
+    const res = await SELF.fetch(`${BASE}/api/suggest`, {
+      method: "OPTIONS",
+      headers: { Origin: "https://open-build.pages.dev" },
+    });
     expect(res.status).toBe(204);
-    expect(res.headers.get("Access-Control-Allow-Origin")).toBe("*");
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBe("https://open-build.pages.dev");
   });
 });

@@ -8,7 +8,21 @@ function corsHeaders(origin: string): Record<string, string> {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    Vary: "Origin",
   };
+}
+
+// ALLOWED_ORIGIN is "*" or a comma-separated allowlist. For an allowlist we echo
+// the request's Origin when it matches (a single ACAO header can't list many),
+// otherwise fall back to the first allowed origin.
+function resolveOrigin(request: Request, env: Env): string {
+  const allowed = (env.ALLOWED_ORIGIN || "*")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (allowed.includes("*")) return "*";
+  const reqOrigin = request.headers.get("Origin") ?? "";
+  return allowed.includes(reqOrigin) ? reqOrigin : allowed[0];
 }
 
 function withCors(res: Response, origin: string): Response {
@@ -86,7 +100,7 @@ async function handleSuggest(request: Request, env: Env): Promise<Response> {
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    const origin = env.ALLOWED_ORIGIN || "*";
+    const origin = resolveOrigin(request, env);
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders(origin) });

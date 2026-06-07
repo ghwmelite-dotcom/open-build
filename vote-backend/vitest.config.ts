@@ -8,7 +8,7 @@ export default defineConfig({
       miniflare: {
         bindings: {
           ADMIN_SECRET: "test-secret",
-          ALLOWED_ORIGIN: "*",
+          ALLOWED_ORIGIN: "https://open-build.pages.dev,https://open-build.ohwpstudios.org",
           TELEGRAM_BOT_TOKEN: "test-token",
           TELEGRAM_CHAT_ID: "-100test",
         },
