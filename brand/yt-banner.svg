@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="1152" viewBox="0 0 2048 1152">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c9a5d"/>
+      <stop offset="0.55" stop-color="#076b3f"/>
+      <stop offset="1" stop-color="#03241a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.42">
+      <stop offset="0" stop-color="#FCD116" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FCD116" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.5" r="0.75">
+      <stop offset="0.5" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.45"/>
+    </radialGradient>
+  </defs>
+  <rect width="2048" height="1152" fill="url(#bg)"/>
+  <rect width="2048" height="1152" fill="url(#glow)"/>
+  <rect width="2048" height="1152" fill="url(#vig)"/>
+
+  <!-- faint decorative rings (only seen on wide/TV) -->
+  <circle cx="120" cy="576" r="220" fill="none" stroke="#FCD116" stroke-width="14" opacity="0.10"/>
+  <circle cx="1928" cy="576" r="220" fill="none" stroke="#FCD116" stroke-width="14" opacity="0.10"/>
+
+  <!-- ===== safe zone (centered 1235x338): keep key content here ===== -->
+  <circle cx="706" cy="576" r="120" fill="none" stroke="#FCD116" stroke-width="30"/>
+  <g font-family="Georgia, 'Times New Roman', serif">
+    <text x="858" y="556" font-size="100" font-weight="700" fill="#ffffff">Open Build</text>
+    <text x="862" y="626" font-size="42" fill="#FCD116">Real problems, built live.</text>
+  </g>
+  <text x="864" y="688" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#cfe3d7">🗳 You decide what we build next · open-build.ohwpstudios.org</text>
+
+  <rect x="0" y="0" width="2048" height="14" fill="#FCD116"/>
+  <rect x="0" y="14" width="2048" height="5" fill="#CE1126"/>
+  <rect x="0" y="1133" width="2048" height="14" fill="#FCD116"/>
+  <rect x="0" y="1128" width="2048" height="5" fill="#CE1126"/>
+</svg>

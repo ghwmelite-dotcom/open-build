@@ -18,6 +18,7 @@ Brand marks for **Open Build** (a show by OHWPStudios).
 | `live-banner.svg` / `.png` | 1920×1080 live‑stream cover. |
 | `yt-thumbnail.svg` / `.png` | 1280×720 YouTube thumbnail (bold, reads small). |
 | `x-header.svg` / `.png` | 1500×500 X/Twitter header (avatar‑safe bottom‑left). |
+| `yt-banner.svg` / `.png` | 2048×1152 YouTube channel banner (content in the all‑device safe zone). |
 
 ## Colours (Ghana national palette)
 
