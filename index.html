@@ -302,6 +302,18 @@
   .adminpanel .ap-msg.ok{color:#7fd49b}
   .adminpanel .ap-msg.err{color:#f0a8a8}
   .adminpanel [hidden]{display:none!important}
+  /* build "story" / talking points (viewer-facing) */
+  .story{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:12px;padding:16px 18px;margin-bottom:18px}
+  .story .story-h{color:#fff;font-size:15px;margin-bottom:8px}
+  .story .story-why{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:12px}
+  .story .story-sec{margin-bottom:10px}
+  .story .story-sec b{display:block;color:#fff;font-size:13px;margin-bottom:5px}
+  .story .story-sec ul{margin:0;padding-left:18px}
+  .story .story-sec li{color:var(--muted);font-size:13.5px;line-height:1.55;margin-bottom:5px}
+  .story .story-join li{color:#cfe3d7}
+  .story .story-src{font-size:12px;color:var(--muted-d);margin-top:8px}
+  .story .story-src a{color:var(--gold);text-decoration:none}
+  .story .story-src a:hover{text-decoration:underline}
 
   /* ===== Footer ===== */
   footer{padding:46px 0 60px;border-top:1px solid var(--line);margin-top:60px;text-align:center}
@@ -629,6 +641,25 @@ const BUILDS = [
     pills:["Maps","Civic","~2 hrs"],
     disclaimer:"Educational prototype — not an official flood warning. Follow GMet & NADMO for real alerts.",
     time:"~2 hrs", setup:"Needs Python on your computer — not a single file.", webBuildable:false,
+    story:{
+      why:"Accra floods almost every rainy season — and it's largely man-made. The Odaw, the city's main stormwater channel, is choked with plastic; wetlands that once soaked up the rain have been built over; and homes sit right in the water's path. This map asks one honest question of the land itself: where does water go when it has nowhere to go?",
+      facts:[
+        "The June 3, 2015 flood-and-fire at Kwame Nkrumah Circle killed more than 150 people — floodwater carried fuel from a GOIL station and a single spark set it alight.",
+        "The Odaw drain is Accra's main stormwater channel — and it's clogged with plastic waste.",
+        "Accra produces roughly 1 million tonnes of plastic a year and recycles under 10% of it.",
+        "Building codes ban construction in waterways — but weak enforcement means homes went up right on the drains.",
+        "Water always finds the lowest, flattest ground — so the shape of the land alone can predict where it pools."
+      ],
+      join:[
+        "Does your area flood? Drop it in the chat — we'll check it live on the map.",
+        "Which hotspot should we test first — Circle, Kaneshie, or Weija?",
+        "Call it before the reveal: will the low-lying spots match the real flood zones?"
+      ],
+      sources:[
+        {label:"2015 Accra floods (Wikipedia)", url:"https://en.wikipedia.org/wiki/2015_Accra_floods"},
+        {label:"Accra's floods are getting worse (Accra Street Journal, 2026)", url:"https://accrastreetjournal.com/2026/05/26/accras-expanding-flood-map-threatens-to-swallow-the-capital-as-poor-planning-fuels-crisis/"}
+      ]
+    },
     steps:[
       {h:"Get Accra's elevation data", p:"Download a Digital Elevation Model (DEM) — a height map of the land.",
        prompt:"I'm building a flood-risk map for Greater Accra. Download a DEM GeoTIFF for latitude 5.4–5.9, longitude -0.4–0.2 using the free OpenTopography Copernicus GLO-30 dataset. Set up a Python environment, install rasterio, save it as accra_dem.tif, and walk me through each step.",
@@ -830,6 +861,14 @@ function openBuild(i){
         <div class="sb-meta">⏱ ${b.time} · ${b.setup}</div>
         <div class="sb-paths"><span class="sb-h">Two ways to follow along:</span>${pathsText(b)}</div>
       </div>` : '';
+  const st = b.story;
+  const storyBlock = st ? `<div class="story">
+        <h4 class="story-h">📖 The story — why this matters</h4>
+        <p class="story-why">${st.why}</p>
+        ${st.facts && st.facts.length ? `<div class="story-sec"><b>Quick facts</b><ul>${st.facts.map(f=>`<li>${f}</li>`).join('')}</ul></div>` : ''}
+        ${st.join && st.join.length ? `<div class="story-sec story-join"><b>🗣️ Join in on the stream</b><ul>${st.join.map(j=>`<li>${j}</li>`).join('')}</ul></div>` : ''}
+        ${st.sources && st.sources.length ? `<div class="story-src">Sources: ${st.sources.map(s=>`<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`).join(' · ')}</div>` : ''}
+      </div>` : '';
   modal.innerHTML=`
     <div class="mhead">
       <button class="close" onclick="closeBuild()">✕</button>
@@ -839,6 +878,7 @@ function openBuild(i){
       ${b.status==='live'&&b.suggestedBy?`<p class="mcredit">🏆 You picked this — suggested by <b>${b.suggestedBy}</b>${b.votePct?`, won with ${b.votePct}% of the vote`:''}.</p>`:''}
     </div>
     <div class="mbody">
+      ${storyBlock}
       ${startBlock}
       ${b.steps.map((s,n)=>`
         <div class="stepline">
