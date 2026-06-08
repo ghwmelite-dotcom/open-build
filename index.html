@@ -690,6 +690,25 @@ const BUILDS = [
     pills:["Everyday","Offline","~75 min"],
     disclaimer:"Routes & fares are approximate and community-maintained — always confirm with the mate or driver.",
     time:"~75 min", setup:"No install needed — a single copy-paste file.", webBuildable:true,
+    story:{
+      why:"The trotro is how Accra actually moves — most of the city gets around in these shared minibuses. But there's no app and no fixed price list: you ask the mate and hope you know the fare, and newcomers get 'charged'. This tool turns scattered local knowledge into one clear answer: where am I, where am I going, and what should it cost?",
+      facts:[
+        "Trotros are the backbone of Accra transport — the shared minibuses most of the city rides every day.",
+        "There are no tickets — the 'mate' (conductor) calls the stops and collects fares by hand.",
+        "Fares aren't set by an app — the unions (GPRTU) set them, and they move with fuel: a 15% cut in May 2025, then a 20% rise from June 2026.",
+        "Because the 'real' fare lives in people's heads, newcomers and visitors get overcharged.",
+        "Every fare in this tool is a placeholder you correct live — local knowledge is the source of truth."
+      ],
+      join:[
+        "What's the fare from your station to Circle right now? Drop it — we'll load it in.",
+        "Ever been 'charged' as a newcomer? Which route?",
+        "Which route should we add first?"
+      ],
+      sources:[
+        {label:"Accra trotro fares", url:"https://accratrotro.com/fares/"},
+        {label:"GPRTU 20% fare increase (Pulse Ghana, 2026)", url:"https://www.pulse.com.gh/story/gprtu-announces-20percent-transport-fare-increment-effective-june-2-2026053011561567231"}
+      ]
+    },
     steps:[
       {h:"Build the route data", p:"Write down the main stations and routes with fares.",
        prompt:"Create a routes.js file with major Accra trotro stations (Circle, Kaneshie, Tema Station, Madina, Achimota, Lapaz, Dansoman, Adenta, Kasoa, 37, Tudu, Accra Central) and routes between them — each with start, destination, approximate fare in cedis, and a note (direct or change at a hub). Use editable placeholder fares I can correct.",
@@ -720,6 +739,25 @@ const BUILDS = [
     pills:["Money","Quick win","Coming"],
     disclaimer:"Fee structures differ by network and change — check official rates too.",
     time:"~45 min", setup:"No install needed — a single copy-paste file.", webBuildable:true,
+    story:{
+      why:"Mobile money is how Ghana pays — and the question that nags everyone is simple: 'I'm sending this much; how much actually lands?' The rules changed a lot recently (the E‑Levy was scrapped in 2025), so confusion is high. This tiny tool answers it instantly — and you keep the numbers honest with the official rates.",
+      facts:[
+        "MoMo is how a huge share of Ghana pays — MTN alone holds about 60% of the mobile‑money market.",
+        "The 1% E‑Levy on transfers was ABOLISHED in April 2025 — it shouldn't appear in any calculator now.",
+        "MTN wallet‑to‑wallet sends are free; the cost people actually feel is cash‑out (withdrawal) fees.",
+        "A new 0.75% wallet‑to‑bank fee (capped at GH₵5) was floated for 2026 — then paused by the Bank of Ghana.",
+        "Because fees keep shifting, a 'what actually lands' tool is genuinely useful — if its numbers stay current."
+      ],
+      join:[
+        "What cash‑out fee did you pay last? Drop the amount + fee.",
+        "Call it: send GH₵100 — how much lands after fees?",
+        "Which network should we get right first — MTN, Telecel, AirtelTigo?"
+      ],
+      sources:[
+        {label:"MTN Ghana abolishes 1% E‑Levy (Graphic Online, 2025)", url:"https://www.graphic.com.gh/business/business-news/mtn-ghana-abolishes-1-e-levy-as-new-tax-reforms-take-effect.html"},
+        {label:"Ghana mobile money fees (momocalc)", url:"https://momocalc.com/ghana"}
+      ]
+    },
     steps:[
       {h:"Set up the fee data", p:"List each network's fee tiers as editable numbers you can correct live.",
        prompt:"I'm building a Mobile Money fee calculator for Ghana. Create an editable data section at the top of the file with placeholder send-money fee tiers for MTN MoMo, Telecel Cash and AirtelTigo Money — each an array of {minAmount, maxAmount, fee} bands in cedis, plus any cap. Mark every number 'PLACEHOLDER — verify with official rates' so I can correct them on stream. Keep it simple.",
@@ -750,6 +788,25 @@ const BUILDS = [
     pills:["Education","Interactive","Coming"],
     disclaimer:"A study aid — always cross-check with official syllabi and past papers.",
     time:"~50 min", setup:"No install needed — a single copy-paste file.", webBuildable:true,
+    story:{
+      why:"Ask any Ghanaian student about the NSMQ and watch them light up — it's the country's most beloved academic showdown. This build turns that energy into a tool anyone can drill with: past questions, instant scoring, and clear explanations. A study aid — not a replacement for the syllabus.",
+      facts:[
+        "The NSMQ began in 1993 — sparked by a question on a Legon tennis court: why aren't birds electrocuted on live wires?",
+        "It started with just 32 schools; today it's Ghana's longest‑running independent TV show and a national event.",
+        "PRESEC (Presbyterian Boys') holds the most titles — six and counting.",
+        "Produced by Primetime, the riddles round is appointment viewing every year.",
+        "The BECE — the exam every JHS student sits — rewards exactly this kind of timed, explained drilling."
+      ],
+      join:[
+        "Which subject should the first quiz cover — Integrated Science, Maths, English?",
+        "Drop a past question you remember — we might add it live.",
+        "Which school are you repping? 👀"
+      ],
+      sources:[
+        {label:"Ghana NSMQ (Wikipedia)", url:"https://en.wikipedia.org/wiki/Ghana_National_Science_and_Maths_Quiz"},
+        {label:"History of the NSMQ (GhScientific)", url:"https://ghscientific.com/history-of-national-math-and-science-quiz/"}
+      ]
+    },
     steps:[
       {h:"Add your questions", p:"Put the questions in one editable list you can swap out.",
        prompt:"I'm building a quiz trainer for Ghanaian students (NSMQ/BECE style). Create an editable questions list at the top of the file with ~8 placeholder questions for one subject — each with the question text, four options, the correct option, and a one-line explanation. Mark them 'PLACEHOLDER — replace with real past questions' so I can swap in real ones.",
@@ -780,6 +837,25 @@ const BUILDS = [
     pills:["Civic","Maps","Coming"],
     disclaimer:"Awareness tool built from public information only — not enforcement or accusation of individuals.",
     time:"~2 hrs", setup:"Needs map/data tools on your computer — not a single file.", webBuildable:false,
+    story:{
+      why:"Galamsey — illegal small‑scale mining — is poisoning the rivers and forests Ghana depends on. This is an awareness tool built only from public, official data: it shows the impact on land and water, and never accuses any individual. The aim is to make a slow‑moving crisis easy to see.",
+      facts:[
+        "Major rivers — the Pra, Ankobra, Birim, Offin and Tano — are heavily polluted, some with mercury and cyanide above safety limits.",
+        "Water turbidity has reached ~14,000 NTU in places; treatment plants are built for around 2,000.",
+        "Cocoa is being hit hard — COCOBOD links sharply lower output partly to mining destroying farmland.",
+        "Forest reserves like the Offin Shelter Belt have been cleared as miners cut trees to reach gold.",
+        "It's an active national crisis: 1,500+ arrests reported in 2025 and fresh river operations into 2026."
+      ],
+      join:[
+        "Is a river near you affected? Share the place (no names — just where).",
+        "Which public dataset should we map first?",
+        "What would make an awareness tool like this genuinely useful to you?"
+      ],
+      sources:[
+        {label:"Ghana must stop galamsey (ISS Africa)", url:"https://issafrica.org/iss-today/ghana-must-stop-galamsey-before-it-sinks-the-country"},
+        {label:"Battling galamsey: community efforts (Africanews, 2025)", url:"https://www.africanews.com/2025/11/09/battling-galamsey-community-efforts-against-illegal-mining-in-ghana/"}
+      ]
+    },
     steps:[
       {h:"Gather public data (awareness only)", p:"Use only public, official data — nothing that names or accuses any person.",
        prompt:"I'm building an awareness map of galamsey (illegal mining) impact in Ghana using ONLY public, official data — for example published satellite-derived deforestation or water-turbidity layers, EPA / Forestry Commission reports, or open datasets. Help me find and download suitable open layers for affected regions. This is for public awareness and monitoring only — not enforcement or accusation of any individual.",
